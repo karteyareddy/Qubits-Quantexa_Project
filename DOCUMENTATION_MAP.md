@@ -27,6 +27,9 @@
 | docs/BENCHMARK.md | Implemented Stage 16 controlled benchmark runner, baseline comparison, and reproducibility |
 | docs/HARDENING.md | Implemented Stage 17 platform reliability, resource limits, input validation, and invariant safety |
 | docs/DETERMINISM.md | Implemented Stage 17 seed propagation, state trajectory fingerprinting, and benchmark reproducibility |
+| docs/DEPLOYMENT.md | Implemented Stage 18 deployment guide, environment variables, Docker Compose, and healthchecks |
+| docs/DEMO_SCRIPT.md | Implemented Stage 19 timed presentation scripts for hackathon judging |
+| docs/JUDGE_QA.md | Implemented Stage 19 technical Q&A defense guide for hackathon judges |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

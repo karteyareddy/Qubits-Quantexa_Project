@@ -378,11 +378,32 @@ Verified:
 
 ## Stage 18 — Deployment
 
+Status: Complete (2026-09-19)
+
 Add Dockerfiles/docker-compose and deployment docs.
 
 Gate: clean build works.
 
+Verified:
+- Backend Dockerfile (`backend/Dockerfile`), Frontend multi-stage Dockerfile (`frontend/Dockerfile`), and `docker-compose.yml` configured with healthchecks and non-root users.
+- Root `Makefile` created providing developer workflow targets (`install`, `backend`, `frontend`, `test`, `lint`, `build`, `smoke`, `docker-up`, `docker-down`).
+- Environment variable templates (`.env.example`, `backend.env.example`, `frontend.env.local.example`) created and externalized.
+- `scripts/smoke_test.py` automated deployment smoke test script created.
+- `docs/DEPLOYMENT.md` and root `README.md` created.
+
 ## Stage 19 — Demo polish
+
+Status: Complete (2026-09-20)
 
 Run complete judge flow:
 normal -> congestion -> QAOA -> optimized signals -> emergency -> corridor -> restoration -> analytics.
+
+Gate: complete judge flow passes cleanly.
+
+Verified:
+- Demo subsystem created in `backend/app/demo/` (`config.py`, `models.py`, `scenario.py`, `runner.py`).
+- Deterministic 6-intersection demo scenario with pre-scheduled congestion events and Emergency Green Corridor preemption implemented.
+- `scripts/demo_check.py` created and verified (`DEMO CHECK PASSED`).
+- Unit tests (`backend/tests/unit/test_demo.py`) pass (2 tests passed).
+- Judge presentation scripts (`docs/DEMO_SCRIPT.md`) and factual Q&A defense guide (`docs/JUDGE_QA.md`) created.
+- Full quality gate (173 backend pytest tests, Ruff, Mypy, Next.js lint & build, git diff check) passed cleanly.
