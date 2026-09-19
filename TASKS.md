@@ -76,6 +76,17 @@ Preserve candidate route generation and caching where useful.
 Gate:
 demo network and OSM mode both produce a common network contract.
 
+Verified:
+- Deterministic six-intersection demo network has 14 directed edges.
+- Mocked OSM normalization returns the shared `Network` contract.
+- Candidate routes are bounded, connected, travel-time ordered, and never fabricated.
+- JSON cache handles misses, hits, corruption, and disabled operation.
+- 37 unit, 2 integration, and 3 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
+- FastAPI `GET /health` still returns `{"status":"ok"}`.
+- Two demo-routing smoke runs produced the same SHA-256 digest.
+
 ## Stage 4 — Migrate traffic simulation
 
 Refactor existing traffic simulator into backend services.

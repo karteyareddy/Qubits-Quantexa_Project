@@ -17,6 +17,8 @@ The backend now defines serializable Pydantic contracts under `backend/app/domai
 
 These models validate identifiers, non-negative structural values, graph references, event and mission timelines, nested scenario serialization, and optimization fallback consistency. They contain no persistence, movement, routing, signal-transition, event-handling, metric-formula, or solver behavior.
 
+Stage 3 extends the network contract with provider-independent `x`/`y` positions, optional latitude/longitude, JSON-safe node/edge/network metadata, stable directed edge IDs, capacity, speed, travel time in seconds, congestion, and closure state. Both demo and OSM providers produce this same model.
+
 ## Runtime entities
 
 ### Intersection

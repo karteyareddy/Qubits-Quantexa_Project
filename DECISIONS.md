@@ -20,3 +20,12 @@ Use Qiskit Aer for the default QAOA demonstration so the core project does not r
 
 ## 2026-09-19 — Offline demo mode
 Provide a deterministic six-intersection network independent of live OSM data.
+
+## 2026-09-19 — Stage 3 routing normalization
+
+- Follow the Stage 3 topology's seven explicit bidirectional road pairs, represented as 14 directed edges.
+- Preserve directed and parallel OSM edges in the domain model instead of converting them to an undirected graph.
+- For node-path search only, choose the fastest open parallel edge per direction with edge ID as a deterministic tie-breaker.
+- Preserve the legacy congestion multiplier but standardize domain travel time to seconds.
+- Raise an explicit routing error when no path exists; never fabricate `[origin, destination]`.
+- Cache only validated JSON domain models. Do not load legacy pickle caches in the new backend.

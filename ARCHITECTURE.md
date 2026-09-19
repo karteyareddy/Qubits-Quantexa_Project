@@ -82,6 +82,23 @@ backend/app/core/         settings and typed service/domain errors
 
 The domain package does not import FastAPI, NetworkX, OSMnx, Qiskit, or the legacy implementation. Routing providers, simulation behavior, signal controllers, optimization builders/solvers, and WebSocket publication remain assigned to later stages.
 
+## Stage 3 routing boundary
+
+```text
+DemoNetworkProvider ----+
+                        +-> Network domain contract -> candidate routes
+OSMNetworkProvider -----+            |
+        |                             +-> NetworkX routing graph
+        +-> validated JSON cache
+```
+
+- The demo provider is offline and deterministic for an explicit seed.
+- OSMnx is an optional dependency and may fall back explicitly to another provider.
+- OSM direction and parallel-edge identities remain in the domain contract.
+- Node-path routing collapses parallel edges only for path search, selecting the open edge with the lowest travel time and using edge ID as a deterministic tie-breaker.
+- Candidate routing raises an explicit `RouteNotFoundError`; it never fabricates a direct edge.
+- Routing remains an internal service with no Stage 3 REST endpoint.
+
 ## Live flow
 
 ```text

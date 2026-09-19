@@ -19,6 +19,18 @@ class NetworkError(DomainError):
     code = "network_error"
 
 
+class NetworkValidationError(NetworkError):
+    code = "network_validation_error"
+
+
+class NetworkProviderError(NetworkError):
+    code = "network_provider_error"
+
+
+class RouteNotFoundError(NetworkError):
+    code = "route_not_found"
+
+
 class ScenarioError(DomainError):
     code = "scenario_error"
 

@@ -1,6 +1,7 @@
 """Validated backend configuration."""
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal, Self
 
 from pydantic import Field, SecretStr, field_validator, model_validator
@@ -28,6 +29,7 @@ class Settings(BaseSettings):
     max_qaoa_reps: int = Field(default=10, ge=1)
     max_qaoa_shots: int = Field(default=8192, ge=1)
     enable_osm: bool = True
+    routing_cache_dir: Path = Path("cache")
     enable_dwave: bool = False
     dwave_api_token: SecretStr | None = Field(default=None, repr=False)
 

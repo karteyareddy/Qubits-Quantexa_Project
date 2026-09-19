@@ -6,7 +6,9 @@ from typing import Protocol
 from app.domain.emergency import EmergencyMission
 from app.domain.event import TrafficEvent
 from app.domain.metrics import TrafficMetrics
+from app.domain.network import Network
 from app.domain.optimization import OptimizationResult, OptimizationType
+from app.domain.route import Route
 from app.domain.scenario import Scenario
 
 
@@ -50,3 +52,16 @@ class EventService(Protocol):
 
 class ExperimentService(Protocol):
     def run(self, scenario: Scenario) -> Sequence[TrafficMetrics]: ...
+
+
+class RoutingService(Protocol):
+    def load_network(self, mode: str) -> Network: ...
+
+    def candidate_routes(
+        self,
+        network: Network,
+        origin: str,
+        destination: str,
+        *,
+        max_candidates: int = 3,
+    ) -> tuple[Route, ...]: ...

@@ -2,7 +2,7 @@
 
 ## Implementation status
 
-Stage 2 adds backend domain and optimization-result contracts only. `GET /health` remains the only implemented HTTP endpoint. The scenario, simulation, optimization, event, emergency, metrics, export, and WebSocket sections below are future contracts and are not yet available.
+Stage 3 adds internal network providers and candidate routing, but no routing endpoint. `GET /health` remains the only implemented HTTP endpoint. The scenario, simulation, optimization, event, emergency, metrics, export, and WebSocket sections below are future contracts and are not yet available.
 
 Base URL:
 `http://localhost:8000/api/v1`

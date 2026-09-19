@@ -2,7 +2,7 @@
 
 from typing import Self
 
-from pydantic import Field, model_validator
+from pydantic import Field, JsonValue, model_validator
 
 from app.domain.base import DomainModel, Identifier
 
@@ -19,7 +19,10 @@ class NetworkNode(DomainModel):
 
     node_id: Identifier
     is_intersection: bool = True
+    x: float | None = None
+    y: float | None = None
     coordinates: Coordinates | None = None
+    metadata: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class NetworkEdge(DomainModel):
@@ -34,6 +37,7 @@ class NetworkEdge(DomainModel):
     travel_time_seconds: float = Field(ge=0.0)
     congestion: float = Field(default=0.0, ge=0.0)
     closed: bool = False
+    metadata: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class Network(DomainModel):
@@ -44,6 +48,7 @@ class Network(DomainModel):
     directed: bool
     nodes: tuple[NetworkNode, ...] = Field(min_length=1)
     edges: tuple[NetworkEdge, ...] = ()
+    metadata: dict[str, JsonValue] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def validate_topology(self) -> Self:

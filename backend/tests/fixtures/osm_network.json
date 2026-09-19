@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {"id": 101, "x": 76.2400, "y": 9.9700, "street_count": 3},
+    {"id": 102, "x": 76.2450, "y": 9.9700, "street_count": 2},
+    {"id": 103, "x": 76.2500, "y": 9.9700, "street_count": 3}
+  ],
+  "edges": [
+    {"source": 101, "target": 102, "key": 0, "length": 300.0, "speed_kph": 30.0, "capacity": 18.0, "osmid": 1001},
+    {"source": 102, "target": 103, "key": 0, "length": 350.0, "speed_kph": 35.0, "capacity": 18.0, "osmid": 1002},
+    {"source": 102, "target": 101, "key": 0, "length": 300.0, "speed_kph": 30.0, "capacity": 18.0, "osmid": 1001},
+    {"source": 103, "target": 102, "key": 0, "length": 350.0, "speed_kph": 35.0, "capacity": 18.0, "osmid": 1002}
+  ]
+}

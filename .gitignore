@@ -18,6 +18,7 @@ frontend/.env.local
 !frontend/.env.local.example
 
 # Backend runtime artifacts
+/cache/
 backend/cache/
 backend/outputs/
 
