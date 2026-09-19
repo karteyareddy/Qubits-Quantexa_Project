@@ -100,3 +100,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Trigger optimization at explicit control boundaries $t = k \cdot \text{control\_interval\_seconds}$ via `AdaptiveScheduler`.
 - Safely apply `SignalSchedule` phase decisions through `AdaptiveSignalPolicy` without bypassing signal safety rules or yellow clearance.
 - Integrate Stage 6 `MetricsService` to return complete `ScenarioMetrics` alongside chronological `AdaptiveOptimizationEvent` logs.
+
+## 2026-09-19 — Stage 12 Dynamic Traffic Events
+
+- Implement typed event models (`CongestionSpikeEvent`, `AccidentEvent`, `RoadClosureEvent`, `EmergencyArrivalEvent`, `EventRecord`) in `backend/app/events/`.
+- `EventScheduler` enforces deterministic tie-breaking (`ROAD_CLOSURE` -> `ACCIDENT` -> `CONGESTION` -> `EMERGENCY_ARRIVAL` -> `event_id`) and idempotency tracking.
+- `EventEngine` manages event lifecycle (`SCHEDULED` -> `ACTIVE` -> `EXPIRED`/`RESOLVED`) and cleans up temporary edge capacity reductions and road closures upon expiry.
+- Vehicles traversing a closed edge complete their traversal safely without teleportation or deletion; candidate routing avoids closed edges automatically.
+- Emergency vehicles injected by `EmergencyArrivalEvent` have `is_emergency = True` and participate in observation and QUBO priority weighting; signal preemption is deferred to Stage 13.
+- `DynamicSimulationRunner` integrates `EventEngine` into the closed-loop adaptive control runner.

@@ -19,6 +19,8 @@ class EventStatus(str, Enum):
     SCHEDULED = "scheduled"
     ACTIVE = "active"
     RESOLVED = "resolved"
+    EXPIRED = "expired"
+    FAILED = "failed"
 
 
 class TrafficEvent(DomainModel):

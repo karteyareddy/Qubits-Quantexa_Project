@@ -248,10 +248,22 @@ Verified:
 
 ## Stage 12 — Events
 
-Implement congestion, accident, closure, emergency arrival.
+Status: Complete (2026-09-19)
+
+Add congestion, accidents, closures, and emergency arrivals.
 
 Gate:
-each event changes state and triggers appropriate handling.
+simulation state changes dynamically and adaptive controller reacts.
+
+Verified:
+- Typed event domain models (`CongestionSpikeEvent`, `AccidentEvent`, `RoadClosureEvent`, `EmergencyArrivalEvent`, `EventRecord`) created in `backend/app/events/models.py`.
+- `EventScheduler` enforces deterministic priority ranking (`ROAD_CLOSURE` -> `ACCIDENT` -> `CONGESTION` -> `EMERGENCY_ARRIVAL` -> `event_id`), idempotency tracking, and lifecycle progression (`SCHEDULED` -> `ACTIVE` -> `EXPIRED`/`RESOLVED`).
+- Handlers in `backend/app/events/handlers.py` apply state mutations (effective capacity reduction, edge closing, pending vehicle demand injection, emergency vehicle injection) and restore temporary effects upon event expiry.
+- `EventEngine` handles event lifecycle and expiration tracking.
+- `DynamicSimulationRunner` in `backend/app/events/service.py` integrates event application into closed-loop adaptive simulation execution.
+- 104 unit, 14 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 13 — Emergency corridor
 

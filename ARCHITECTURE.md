@@ -228,3 +228,6 @@ Stage 10 builds the hybrid quantum-classical signal optimizer (`app.optimization
 
 ## Stage 11 Adaptive Traffic Optimization Loop
 Stage 11 connects discrete simulation, traffic observation (`TrafficObserver`), state-dependent QUBO building, Stage 10 hybrid optimization, safe schedule application (`AdaptiveSignalPolicy`), and Stage 6 metrics calculation into a receding-horizon adaptive controller (`app.adaptive`).
+
+## Stage 12 Dynamic Traffic Events Subsystem
+Stage 12 implements deterministic, typed dynamic event handling (`app.events`), managing event scheduling (`EventScheduler`), execution handlers (`app.events.handlers`), lifecycle progression (`EventEngine`), and integration into the closed-loop adaptive simulation runner (`DynamicSimulationRunner`).

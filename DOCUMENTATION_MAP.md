@@ -20,6 +20,7 @@
 | docs/QAOA.md | Implemented Stage 9 QAOA quantum optimization engine design and circuit mapping |
 | docs/HYBRID_OPTIMIZATION.md | Implemented Stage 10 hybrid quantum-classical signal optimizer design and refinement |
 | docs/ADAPTIVE_CONTROL.md | Implemented Stage 11 closed-loop adaptive traffic optimization loop and safety policies |
+| docs/DYNAMIC_EVENTS.md | Implemented Stage 12 dynamic traffic event execution engine and lifecycle models |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |
