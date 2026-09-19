@@ -231,3 +231,6 @@ Stage 11 connects discrete simulation, traffic observation (`TrafficObserver`), 
 
 ## Stage 12 Dynamic Traffic Events Subsystem
 Stage 12 implements deterministic, typed dynamic event handling (`app.events`), managing event scheduling (`EventScheduler`), execution handlers (`app.events.handlers`), lifecycle progression (`EventEngine`), and integration into the closed-loop adaptive simulation runner (`DynamicSimulationRunner`).
+
+## Stage 13 Emergency Green Corridor Subsystem
+Stage 13 implements time-aware emergency signal preemption (`app.emergency`), managing route validation and intersection sequence extraction (`EmergencyRouteExtractor`), ETA and green-window prediction (`EmergencyETAPredictor`), validated corridor planning (`EmergencyCorridorPlanner`), signal preemption overrides (`EmergencyCorridorController`), and clean corridor release upon emergency vehicle arrival (`EmergencyCorridorService`).

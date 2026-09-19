@@ -11,6 +11,7 @@ from app.adaptive.models import AdaptiveOptimizationEvent, AdaptiveRunResult
 from app.adaptive.observer import TrafficObserver
 from app.adaptive.scheduler import AdaptiveScheduler
 from app.domain.base import DomainModel
+from app.emergency.service import EmergencyCorridorService
 from app.events.engine import EventEngine
 from app.events.models import EventRecord
 from app.metrics.service import MetricsService
@@ -29,15 +30,17 @@ class DynamicRunResult(DomainModel):
 
 
 class DynamicSimulationRunner:
-    """Runs closed-loop adaptive simulation with dynamic event processing."""
+    """Runs closed-loop adaptive simulation with dynamic event and emergency corridor processing."""
 
     def __init__(
         self,
         adaptive_config: AdaptiveConfig | None = None,
         event_engine: EventEngine | None = None,
+        emergency_service: EmergencyCorridorService | None = None,
     ) -> None:
         self.adaptive_config = adaptive_config or AdaptiveConfig()
         self.event_engine = event_engine or EventEngine()
+        self.emergency_service = emergency_service or EmergencyCorridorService()
 
     def run_dynamic_simulation(
         self,
@@ -84,10 +87,17 @@ class DynamicSimulationRunner:
             # Step 4a: Apply events due at current simulation time
             self.event_engine.process_due_events(sim)
 
-            # Step 4b: Record observation
+            # Step 4b: Update emergency corridors and apply signal preemption overrides
+            self.emergency_service.update(
+                sim,
+                signal_system=signal_system,
+                adaptive_policy=adaptive_policy,
+            )
+
+            # Step 4c: Record observation
             observations.append(sim.state)
 
-            # Step 4c: Check if optimization cycle is due
+            # Step 4d: Check if optimization cycle is due
             if scheduler.is_optimization_due(current_time):
                 net_snap, state_snap = observer.observe(sim)
 
@@ -101,6 +111,12 @@ class DynamicSimulationRunner:
                 if opt_res.is_feasible and opt_res.selected_schedule is not None:
                     schedule = opt_res.selected_schedule
                     adaptive_policy.update_schedule(schedule, current_time)
+                    # Re-apply emergency corridor preemption overrides over newly applied schedule
+                    self.emergency_service.update(
+                        sim,
+                        signal_system=signal_system,
+                        adaptive_policy=adaptive_policy,
+                    )
                 else:
                     if cfg.fail_on_optimization_error:
                         raise RuntimeError(f"Adaptive optimization failed at t={current_time}")
@@ -124,11 +140,16 @@ class DynamicSimulationRunner:
                 scheduler.mark_optimized(current_time)
                 interval_idx += 1
 
-            # Step 4d: Advance simulation by 1 timestep
+            # Step 4e: Advance simulation by 1 timestep
             sim.step()
 
-            # Step 4e: Check event expirations at updated time
+            # Step 4f: Check event expirations at updated time
             self.event_engine.check_expirations(sim)
+            self.emergency_service.update(
+                sim,
+                signal_system=signal_system,
+                adaptive_policy=adaptive_policy,
+            )
 
         # Calculate final metrics trajectory
         scenario_metrics = metrics_service.evaluate(

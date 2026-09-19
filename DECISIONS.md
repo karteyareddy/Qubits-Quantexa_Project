@@ -109,3 +109,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Vehicles traversing a closed edge complete their traversal safely without teleportation or deletion; candidate routing avoids closed edges automatically.
 - Emergency vehicles injected by `EmergencyArrivalEvent` have `is_emergency = True` and participate in observation and QUBO priority weighting; signal preemption is deferred to Stage 13.
 - `DynamicSimulationRunner` integrates `EventEngine` into the closed-loop adaptive control runner.
+
+## 2026-09-19 — Stage 13 Emergency Green Corridor
+
+- Implement typed emergency corridor models (`EmergencyCorridor`, `CorridorIntersectionReservation`, `EmergencyCorridorConfig`, `EmergencyCorridorMetrics`) in `backend/app/emergency/`.
+- `EmergencyRouteExtractor` validates active routes, extracts direction-preserving intersection sequences, and dynamically reroutes if an active route edge is blocked by a road closure.
+- `EmergencyETAPredictor` computes deterministic intersection ETAs and time-bounded green windows (`[ETA - arrival_buffer, ETA + clearance_buffer]`), mapping approach axes to `NS_GREEN` or `EW_GREEN`.
+- `EmergencyCorridorController` applies signal preemption overrides to `AdaptiveSignalPolicy` during active green windows while preserving non-corridor phase conflict safety.
+- Emergency corridor overrides take precedence over normal adaptive QAOA schedules during active green windows.
+- Upon emergency vehicle arrival at destination, `EmergencyCorridorService` releases signal preemption and restores normal adaptive control.

@@ -267,10 +267,23 @@ Verified:
 
 ## Stage 13 — Emergency corridor
 
-Implement routing, priority signals, tracking, restoration.
+Status: Complete (2026-09-19)
+
+Build time-aware green wave corridor for active emergency vehicles.
 
 Gate:
-emergency reaches destination and previous controller resumes.
+emergency vehicle receives prioritized green sequence along route and normal control resumes upon release.
+
+Verified:
+- Typed domain models (`EmergencyCorridor`, `CorridorIntersectionReservation`, `EmergencyCorridorConfig`, `EmergencyCorridorMetrics`) created in `backend/app/emergency/models.py`.
+- `EmergencyRouteExtractor` validates routes, extracts ordered intersection sequences preserving travel direction, and handles dynamic rerouting on road closures.
+- `EmergencyETAPredictor` predicts intersection arrival times (ETAs), time-bounded green windows, and maps approach axes to green phases (`NS_GREEN`, `EW_GREEN`).
+- `EmergencyCorridorPlanner` and `EmergencyCorridorController` build validated corridors and apply signal preemption overrides over `AdaptiveSignalPolicy` during active green windows while maintaining conflict safety.
+- `EmergencyCorridorService` manages complete corridor lifecycles (`PLANNED` -> `ACTIVE` -> `COMPLETED`/`CANCELLED`/`FAILED`) and releases signal preemption upon emergency vehicle arrival.
+- Integrated into `DynamicSimulationRunner` in `backend/app/events/service.py`.
+- 113 unit, 23 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 14 — FastAPI REST/WebSocket
 
