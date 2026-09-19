@@ -16,6 +16,7 @@ class IntersectionEntryPolicy(Protocol):
         vehicle: Vehicle,
         next_edge: NetworkEdge,
         state: SimulationState,
+        at_time_seconds: float,
     ) -> bool: ...
 
 
@@ -28,5 +29,6 @@ class PermitAllIntersections:
         vehicle: Vehicle,
         next_edge: NetworkEdge,
         state: SimulationState,
+        at_time_seconds: float,
     ) -> bool:
         return True

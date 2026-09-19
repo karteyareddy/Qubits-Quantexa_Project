@@ -114,6 +114,21 @@ SimulationScenario + Stage 3 Network/Route
 - `IntersectionEntryPolicy` permits Stage 5 signal control without adding signal behavior now.
 - The simulation package has no FastAPI, WebSocket, UI, optimizer, or quantum dependency.
 
+## Stage 5 signal boundary
+
+```text
+Network incoming edges -> SignalApproach mapping
+        -> FixedTimeSignalController per intersection
+        -> SignalSystem -> FixedTimeSignalPolicy
+        -> simulation IntersectionEntryPolicy
+```
+
+- Approach axes derive from network coordinates and directed incoming edges.
+- Fixed cycles expose explicit green, yellow, red, and optional all-red behavior.
+- Only one axis may be green; yellow and all-red deny new intersection entry.
+- Signal permission is evaluated at the vehicle's exact crossing time within a simulation step.
+- Timing is classical and fixed; no queue adaptation, optimization, or quantum logic exists in Stage 5.
+
 ## Live flow
 
 ```text

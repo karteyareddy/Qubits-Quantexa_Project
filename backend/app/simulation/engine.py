@@ -222,7 +222,14 @@ class TrafficSimulation:
                 return self._complete_vehicle(current, next_time, occupancy)
 
             next_edge = self._edge(route.edge_ids[next_index])
-            if not self._can_enter(current, next_edge, occupancy, self._state):
+            crossing_time = next_time - remaining_seconds
+            if not self._can_enter(
+                current,
+                next_edge,
+                occupancy,
+                self._state,
+                crossing_time,
+            ):
                 return self._wait_vehicle(current, remaining_seconds)
             self._leave_edge(current.current_edge_id, current.vehicle_id, occupancy)
             occupancy[next_edge.edge_id].append(current.vehicle_id)
@@ -252,7 +259,13 @@ class TrafficSimulation:
         if vehicle.current_edge_id is not None:
             return vehicle
         edge = self._edge(route.edge_ids[0])
-        if not self._can_enter(vehicle, edge, occupancy, state):
+        if not self._can_enter(
+            vehicle,
+            edge,
+            occupancy,
+            state,
+            state.simulation_time_seconds,
+        ):
             return vehicle.model_copy(
                 update={"state": VehicleState.WAITING, "speed_kph": 0.0}
             )
@@ -274,12 +287,18 @@ class TrafficSimulation:
         edge: NetworkEdge,
         occupancy: dict[str, list[str]],
         state: SimulationState,
+        at_time_seconds: float,
     ) -> bool:
         capacity = max(1, floor(edge.capacity))
         return (
             not edge.closed
             and len(occupancy[edge.edge_id]) < capacity
-            and self._entry_policy.can_enter_next_edge(vehicle, edge, state)
+            and self._entry_policy.can_enter_next_edge(
+                vehicle,
+                edge,
+                state,
+                at_time_seconds,
+            )
         )
 
     def _wait_vehicle(self, vehicle: Vehicle, seconds: float) -> Vehicle:

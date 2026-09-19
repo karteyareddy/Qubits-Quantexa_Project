@@ -66,6 +66,8 @@ npm run build
 - Validated JSON network cache with configurable location and no pickle loading.
 - Deterministic discrete-time traffic simulation with scheduled arrivals, movement, capacity, queues, completion, and serializable snapshots.
 - Low-traffic, congested, emergency-vehicle, and locally seeded demand scenarios.
+- Network-derived approaches, deterministic fixed-time signal controllers, safe phase transitions, and serializable signal snapshots.
+- Signal-aware simulation blocking for red/yellow indications while preserving downstream capacity checks.
 - Minimal backend and frontend dependency manifests, with backend development tools separated.
 - Container definitions for the two application skeletons.
 
@@ -81,6 +83,10 @@ Stage 3 complete: offline and optional OSM network providers, normalization, cac
 
 Stage 4 complete: the offline simulation engine models routed vehicle arrivals, edge movement, capacity blocking, emergent queues, waiting, completion, and emergency identity. See `TRAFFIC_SIMULATION.md`. Signal control, formal metrics, events, optimization, APIs, and live publication remain pending.
 
+## Stage 5 status
+
+Stage 5 complete: deterministic fixed-time controllers derive approaches from the Stage 3 network and control Stage 4 intersection entry. See `TRAFFIC_SIGNALS.md`. Adaptive control, formal metrics, signal optimization, events, APIs, and live publication remain pending.
+
 OSM mode is optional and installed separately:
 
 ```bash
@@ -90,6 +96,6 @@ python -m pip install -r requirements-osm.txt
 
 ## Intentionally not implemented
 
-The current application does not implement traffic-signal control, route or signal QUBOs in the new backend, QAOA, D-Wave integration, emergency green corridors, dynamic-event handling, formal metric formulas, environmental estimates, benchmarking, routing REST endpoints, maps, charts, WebSockets, or the final dashboard.
+The current application does not implement adaptive traffic-signal control, route or signal QUBOs in the new backend, QAOA, D-Wave integration, emergency green corridors, dynamic-event handling, formal metric formulas, environmental estimates, benchmarking, routing REST endpoints, maps, charts, WebSockets, or the final dashboard.
 
 The root Streamlit files and `legacy/` directory remain unchanged and available as migration references. Later stages must pass their documented gates before adding these capabilities.

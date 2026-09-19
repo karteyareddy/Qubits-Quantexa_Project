@@ -13,6 +13,7 @@
 | QUANTUM_SPEC.md | QUBO/QAOA |
 | SIMULATION_SPEC.md | Simulation |
 | docs/TRAFFIC_SIMULATION.md | Implemented Stage 4 simulation design and limitations |
+| docs/TRAFFIC_SIGNALS.md | Implemented Stage 5 fixed-time signal design and safety rules |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

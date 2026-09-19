@@ -39,3 +39,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Process vehicles by stable ID and use local seeded random generators for reproducibility.
 - Keep intersection admission behind `IntersectionEntryPolicy`; Stage 4 permits all intersections after capacity and closure checks.
 - Represent emergency identity and priority metadata without implementing emergency signal priority.
+
+## 2026-09-19 — Stage 5 fixed-time signal baseline
+
+- Derive controlled approaches from directed incoming network edges and node geometry.
+- Use a two-axis EW/NS fixed cycle with explicit yellow and configurable all-red clearance.
+- Permit intersection entry only on green; queued vehicles do not enter on yellow.
+- Keep edge capacity and closure checks independent and authoritative after signal permission.
+- Evaluate permission at the actual edge-crossing time within the discrete simulation step.
+- Use `IntersectionEntryPolicy` as the replacement seam for later controllers; do not add adaptive or optimization behavior now.

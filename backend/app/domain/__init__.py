@@ -14,10 +14,11 @@ from app.domain.optimization import (
 )
 from app.domain.route import Route
 from app.domain.scenario import Scenario, ScenarioConfiguration
-from app.domain.signal import SignalPhase, SignalState
+from app.domain.signal import ApproachSignalState, SignalIndication, SignalPhase, SignalState
 from app.domain.vehicle import EmergencySubtype, Vehicle, VehicleState, VehicleType
 
 __all__ = [
+    "ApproachSignalState",
     "Coordinates",
     "EmergencyMetrics",
     "EmergencyMission",
@@ -37,6 +38,7 @@ __all__ = [
     "Route",
     "Scenario",
     "ScenarioConfiguration",
+    "SignalIndication",
     "SignalPhase",
     "SignalState",
     "SolverMetadata",

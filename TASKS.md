@@ -115,6 +115,17 @@ Implement:
 Gate:
 vehicles respond correctly to green/red.
 
+Verified:
+- Incoming directed network edges map deterministically to signal approaches.
+- Fixed-time EW/NS phases expose explicit red, yellow, green, and all-red states.
+- Conflicting approach axes are never permitted simultaneously.
+- Vehicles wait at red/yellow, cross on green, and remain blocked by full downstream edges.
+- Signal delay contributes to queues and waiting time without double counting.
+- Repeated 60-second signal-controlled trajectories produce the same SHA-256 digest.
+- 62 unit, 7 integration, and 5 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
+
 ## Stage 6 — Metrics
 
 Implement traffic/environment metrics.
