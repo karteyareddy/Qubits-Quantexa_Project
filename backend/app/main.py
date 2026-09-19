@@ -1,8 +1,5 @@
-"""FastAPI application entry point."""
+"""FastAPI application entry point importing main app."""
 
-from fastapi import FastAPI
+from app.api.main import app
 
-from app.api.router import router
-
-app = FastAPI(title="Quantum Traffic Optimizer")
-app.include_router(router)
+__all__ = ["app"]

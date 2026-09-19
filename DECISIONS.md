@@ -118,3 +118,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - `EmergencyCorridorController` applies signal preemption overrides to `AdaptiveSignalPolicy` during active green windows while preserving non-corridor phase conflict safety.
 - Emergency corridor overrides take precedence over normal adaptive QAOA schedules during active green windows.
 - Upon emergency vehicle arrival at destination, `EmergencyCorridorService` releases signal preemption and restores normal adaptive control.
+
+## 2026-09-19 — Stage 14 FastAPI REST & WebSocket Application API
+
+- Implement FastAPI application layer under `backend/app/api/` with typed Pydantic schemas (`app.api.schemas`).
+- The API layer acts purely as a typed HTTP/WebSocket adapter without duplicating domain or solver business logic.
+- Simulation sessions are managed in-memory via `SimulationSessionManager` with `asyncio.Lock` per `SimulationSession` for thread/async concurrency safety.
+- Custom exception handlers (`register_exception_handlers`) map domain errors (`SimulationError`, `RoutingError`, `SignalError`, `OptimizationError`, `EventError`, `EmergencyCorridorError`) to structured JSON API error payloads.
+- Live simulation state updates stream asynchronously over WebSockets (`WS /api/v1/simulations/{id}/ws`) using `WebSocketConnectionManager`. Client disconnects do not interrupt simulation execution.
+- CORS middleware is configured for Next.js development origins (`http://localhost:3000`).

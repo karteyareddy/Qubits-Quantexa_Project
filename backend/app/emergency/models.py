@@ -20,6 +20,15 @@ class CorridorStatus(str, Enum):
     FAILED = "failed"
 
 
+class EmergencyCorridorError(Exception):
+    """Base exception for emergency green corridor failures."""
+
+    def __init__(self, message: str) -> None:
+        self.message = message
+        super().__init__(message)
+
+
+
 class CorridorIntersectionReservation(DomainModel):
     """Time-bounded green phase reservation for a single controlled intersection."""
 

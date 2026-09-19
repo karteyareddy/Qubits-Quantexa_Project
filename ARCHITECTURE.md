@@ -234,3 +234,6 @@ Stage 12 implements deterministic, typed dynamic event handling (`app.events`), 
 
 ## Stage 13 Emergency Green Corridor Subsystem
 Stage 13 implements time-aware emergency signal preemption (`app.emergency`), managing route validation and intersection sequence extraction (`EmergencyRouteExtractor`), ETA and green-window prediction (`EmergencyETAPredictor`), validated corridor planning (`EmergencyCorridorPlanner`), signal preemption overrides (`EmergencyCorridorController`), and clean corridor release upon emergency vehicle arrival (`EmergencyCorridorService`).
+
+## Stage 14 FastAPI REST & WebSocket Application API
+Stage 14 exposes the complete traffic optimization engine via a production-grade FastAPI application (`app.api`). It provides typed Pydantic REST endpoints for network topology, scenarios, simulation session creation/control, manual QAOA optimization, dynamic event injection, emergency corridors, and metrics. Live simulation state updates are streamed asynchronously via WebSockets (`app.api.routes.ws`), with session concurrency protection (`asyncio.Lock`), custom error mapping, CORS middleware, and automatic OpenAPI schema generation.

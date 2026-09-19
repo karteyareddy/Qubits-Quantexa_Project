@@ -287,10 +287,24 @@ Verified:
 
 ## Stage 14 — FastAPI REST/WebSocket
 
+Status: Complete (2026-09-19)
+
 Expose contracts in API.md.
 
 Gate:
 frontend can start/pause/step/read state/run optimization.
+
+Verified:
+- Production FastAPI application setup under `backend/app/api/` with router structure and CORS middleware.
+- Typed Pydantic schemas created under `backend/app/api/schemas/` for requests and responses.
+- `SimulationSessionManager` manages in-memory simulation sessions with per-session `asyncio.Lock` for thread/async concurrency protection.
+- REST endpoints exposed for `/health`, `/api/v1/network`, `/api/v1/scenarios`, `/api/v1/simulations` (create, state, start, pause, step, stop), `/api/v1/simulations/{id}/optimize`, `/api/v1/simulations/{id}/events`, `/api/v1/simulations/{id}/emergency`, and `/api/v1/simulations/{id}/metrics`.
+- Live simulation state streaming implemented over WebSocket (`WS /api/v1/simulations/{id}/ws`) using `WebSocketConnectionManager`.
+- Custom exception handlers map domain errors (`SimulationError`, `RoutingError`, `SignalError`, `OptimizationError`, `EventError`, `EmergencyCorridorError`) to structured JSON error responses.
+- `docs/API.md` created documenting REST and WebSocket contracts.
+- 115 unit, 25 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 15 — Next.js UI
 

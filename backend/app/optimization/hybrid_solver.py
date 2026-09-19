@@ -104,41 +104,70 @@ class HybridSignalOptimizer:
         # 2. Run QAOA Optimization
         q_start = time.perf_counter()
         qaoa_solver = QAOASolver(config=cfg.qaoa_config)
-        qaoa_res = qaoa_solver.solve_qubo(
-            Q=Q,
-            constant_offset=constant_offset,
-            variable_names=variable_names,
-            variable_map=variable_map,
-            intersection_legal_phases=intersection_legal_phases,
-            horizon_intervals=horizon_intervals,
-        )
-        qaoa_time = time.perf_counter() - q_start
+        qaoa_failed = False
+        qaoa_fail_msg = ""
+        qaoa_time = 0.0
 
-        # 3. Extract top-K candidates from QAOA measurement distribution
-        candidates = extract_candidates(
-            measurement_counts=qaoa_res.measurement_counts,
-            Q=Q,
-            constant_offset=constant_offset,
-            variable_names=variable_names,
-            variable_map=variable_map,
-            intersection_legal_phases=intersection_legal_phases,
-            horizon_intervals=horizon_intervals,
-            top_k=cfg.candidate_count,
-        )
+        try:
+            qaoa_res = qaoa_solver.solve_qubo(
+                Q=Q,
+                constant_offset=constant_offset,
+                variable_names=variable_names,
+                variable_map=variable_map,
+                intersection_legal_phases=intersection_legal_phases,
+                horizon_intervals=horizon_intervals,
+            )
+            qaoa_time = time.perf_counter() - q_start
 
-        feasible_candidates = [c for c in candidates if c.is_feasible]
+            # 3. Extract top-K candidates from QAOA measurement distribution
+            candidates = extract_candidates(
+                measurement_counts=qaoa_res.measurement_counts,
+                Q=Q,
+                constant_offset=constant_offset,
+                variable_names=variable_names,
+                variable_map=variable_map,
+                intersection_legal_phases=intersection_legal_phases,
+                horizon_intervals=horizon_intervals,
+                top_k=cfg.candidate_count,
+            )
+            feasible_candidates = [c for c in candidates if c.is_feasible]
+        except Exception as exc:  # noqa: BLE001
+            qaoa_failed = True
+            qaoa_fail_msg = str(exc)
+            feasible_candidates = []
+
         fallback_used = False
         fallback_reason = None
 
-        # 4. Handle Case: No feasible candidate sampled by QAOA
-        if not feasible_candidates:
-            if cfg.allow_classical_fallback and num_vars <= 20:
+        # 4. Handle Case: No feasible candidate sampled by QAOA or QAOA failed
+        if not feasible_candidates or qaoa_failed:
+            if cfg.allow_classical_fallback:
                 fallback_used = True
-                fallback_reason = "No feasible QAOA candidate sampled from measurement distribution"
-                c_start = time.perf_counter()
-                best_sample, exact_energy, exact_bitstring = solve_signal_qubo_brute_force(
-                    Q, variable_names, constant_offset
+                fallback_reason = (
+                    f"QAOA solver error: {qaoa_fail_msg}"
+                    if qaoa_failed
+                    else "No feasible QAOA candidate sampled from measurement distribution"
                 )
+                c_start = time.perf_counter()
+                if num_vars <= 20:
+                    best_sample, exact_energy, exact_bitstring = solve_signal_qubo_brute_force(
+                        Q, variable_names, constant_offset
+                    )
+                else:
+                    # Construct default legal assignment for N > 20
+                    best_sample = {}
+                    bit_chars = []
+                    for name in variable_names:
+                        parts = name.split("_")
+                        if len(parts) >= 4 and parts[2] == "P0":
+                            best_sample[name] = 1
+                            bit_chars.append("1")
+                        else:
+                            best_sample[name] = 0
+                            bit_chars.append("0")
+                    exact_energy = evaluate_qubo_energy(Q, best_sample, constant_offset)
+                    exact_bitstring = "".join(bit_chars)
+
                 classical_time += time.perf_counter() - c_start
 
                 sched, feasibility, _bit = decode_signal_qubo_solution(

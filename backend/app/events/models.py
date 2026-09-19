@@ -9,6 +9,14 @@ from app.domain.base import DomainModel, Identifier
 from app.domain.event import EventStatus, EventType
 
 
+class EventError(Exception):
+    """Base exception for dynamic event processing errors."""
+
+    def __init__(self, message: str) -> None:
+        self.message = message
+        super().__init__(message)
+
+
 class TrafficEventBase(DomainModel):
     """Base contract for strongly typed dynamic traffic events."""
 
