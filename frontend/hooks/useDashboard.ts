@@ -74,6 +74,32 @@ export function useDashboard() {
     };
   }, []);
 
+  // Auto-create default simulation session on mount once scenarios are loaded
+  useEffect(() => {
+    if (scenarios.length > 0 && !activeSimulationId) {
+      api
+        .createSimulation({
+          scenario_id: selectedScenarioId,
+          duration_seconds: 120,
+          control_interval_seconds: 5,
+          adaptive_enabled: true,
+          events_enabled: true,
+          emergency_corridor_enabled: true,
+        })
+        .then(async (session) => {
+          setActiveSimulationId(session.simulation_id);
+          setSimulationStatus(session.status);
+          setSimulationTime(session.simulation_time_seconds);
+
+          const snap = await api.getSimulation(session.simulation_id);
+          setStateSnapshot(snap);
+        })
+        .catch(() => {
+          // Ignore auto-create errors if user manually triggers creation later
+        });
+    }
+  }, [scenarios, selectedScenarioId, activeSimulationId]);
+
   // WebSocket message handler
   const handleWSMessage = useCallback((msg: WebSocketMessage) => {
     if (msg.type === 'state') {
