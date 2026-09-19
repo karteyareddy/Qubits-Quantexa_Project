@@ -1,6 +1,6 @@
 """Decoder converting binary QUBO samples into typed SignalSchedules."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from app.domain.optimization import FeasibilityResult
 from app.domain.signal import SignalPhase
@@ -11,7 +11,7 @@ def decode_signal_qubo_solution(
     assignment: dict[str, int],
     variable_map: dict[tuple[str, int, int], str],
     variable_names: Sequence[str],
-    intersection_legal_phases: dict[str, Sequence[SignalPhase]],
+    intersection_legal_phases: Mapping[str, Sequence[SignalPhase]],
     horizon_intervals: int,
     interval_duration_seconds: float = 10.0,
     schedule_id: str = "schedule-1",

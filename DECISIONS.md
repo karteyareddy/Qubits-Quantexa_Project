@@ -84,3 +84,11 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Explicitly account for Qiskit big-endian measurement string formatting in `app.quantum.qaoa`.
 - Filter quantum measurement distributions for feasible bitstrings satisfying Stage 8 phase constraints before selecting the minimum-energy signal schedule.
 - Maintain solver transparency by explicitly reporting `solver_name="qaoa"` and `backend_name="qiskit_aer"`.
+
+## 2026-09-19 — Stage 10 Hybrid Quantum-Classical Signal Optimizer
+
+- Structure hybrid optimization under `backend/app/optimization/` using `HybridSignalOptimizer`.
+- Extract top-K unique candidates from Qiskit measurement distributions, sorted deterministically by feasibility $\to$ energy $\to$ probability $\to$ string lexicography.
+- Perform local 1-bit flip classical refinement on the best feasible QAOA candidate, accepting neighbor assignments only when feasibility is preserved and energy strictly decreases.
+- Enforce strict fallback reporting: if QAOA yields no feasible candidate and classical fallback is used, `solver_name` is explicitly set to `"classical_reference"` and `fallback_used = True`.
+- Compute exact energy gap relative to classical reference enumeration for small instances ($N \le 20$).

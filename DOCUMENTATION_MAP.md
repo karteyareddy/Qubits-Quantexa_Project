@@ -18,6 +18,7 @@
 | docs/OPTIMIZATION_MIGRATION.md | Implemented Stage 7 Priority-Aware MTF optimization design and limitations |
 | docs/SIGNAL_QUBO.md | Implemented Stage 8 Signal-Control QUBO formulation design and constraints |
 | docs/QAOA.md | Implemented Stage 9 QAOA quantum optimization engine design and circuit mapping |
+| docs/HYBRID_OPTIMIZATION.md | Implemented Stage 10 hybrid quantum-classical signal optimizer design and refinement |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

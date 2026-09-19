@@ -209,11 +209,23 @@ Verified:
 
 ## Stage 10 — Hybrid optimizer
 
+Status: Complete (2026-09-19)
+
 Connect:
 traffic -> QUBO -> QAOA -> decode -> validate -> score.
 
 Gate:
 one live optimization produces a legal plan.
+
+Verified:
+- `HybridOptimizerConfig`, `CandidateSolution`, and `HybridOptimizationResult` domain models implemented.
+- Top-K unique candidate extraction with deterministic sorting (feasibility $\to$ energy $\to$ probability $\to$ string lexicography) in `hybrid_candidates.py`.
+- Local 1-bit flip classical refinement in `hybrid_refinement.py` preserving feasibility while improving energy.
+- `HybridSignalOptimizer` orchestrates `hybrid`, `qaoa_only`, and `classical_reference` execution modes.
+- Transparent classical fallback policy correctly identifies solver identity as `classical_reference` when invoked.
+- 94 unit, 12 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 11 — Adaptive simulation
 
