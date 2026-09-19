@@ -1,32 +1,34 @@
 # Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-
-# Virtual Environment
 .venv/
 venv/
-ENV/
-env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Cache
-cache/
-*.cache
+# Environment files
+.env
+.env.*
+!.env.example
+!*.env.example
+frontend/.env.local
+!frontend/.env.local.example
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Backend runtime artifacts
+backend/cache/
+backend/outputs/
 
-# OS
-.DS_Store
-Thumbs.db
+# Frontend dependencies and build output
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
 
-# Streamlit
-.streamlit/
-
-# Project specific
-package-lock.json
+# Logs and generated output
+outputs/
+*.log
