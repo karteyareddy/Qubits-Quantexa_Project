@@ -308,11 +308,27 @@ Verified:
 
 ## Stage 15 — Next.js UI
 
+Status: Complete (2026-09-19)
+
 Build:
 Dashboard, Simulation, Quantum Lab, Emergency, Events, Analytics, Settings.
 
 Gate:
 all pages load with live backend state.
+
+Verified:
+- Production Next.js control center dashboard created under `frontend/` adopting a dark control center visual style.
+- Typed REST client (`lib/api.ts`) and WebSocket subscriber (`lib/websocket.ts`) created, with types strictly matching Stage 14 FastAPI schemas (`lib/types.ts`).
+- Interactive 6-intersection SVG grid topology (`TrafficMap.tsx`) implemented with dynamic edge congestion, signal phases, vehicle markers, and emergency route highlights.
+- Metric cards (`MetricCards.tsx`) and sparkline trend charts (`MetricTrends.tsx`) display live traffic and environmental metrics.
+- Quantum solver status (`QuantumPanel.tsx`) and side-by-side classical reference comparison (`ClassicalComparison.tsx`) render QAOA depth, energy, and feasibility.
+- Emergency corridor panel (`EmergencyCorridorPanel.tsx`) and dynamic event injection modal (`EventInjectionModal.tsx`) integrated into primary workspace.
+- `docs/FRONTEND.md` created.
+- `npm run lint` passes (0 errors, 0 warnings).
+- `npm run build` compiles and generates static pages cleanly.
+- Backend regression suite passes (156 tests pass).
+- Ruff check backend passes with 0 errors.
+- Mypy backend/app passes with 0 errors.
 
 ## Stage 16 — Benchmarking
 

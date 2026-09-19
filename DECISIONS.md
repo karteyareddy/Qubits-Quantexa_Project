@@ -127,3 +127,13 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Custom exception handlers (`register_exception_handlers`) map domain errors (`SimulationError`, `RoutingError`, `SignalError`, `OptimizationError`, `EventError`, `EmergencyCorridorError`) to structured JSON API error payloads.
 - Live simulation state updates stream asynchronously over WebSockets (`WS /api/v1/simulations/{id}/ws`) using `WebSocketConnectionManager`. Client disconnects do not interrupt simulation execution.
 - CORS middleware is configured for Next.js development origins (`http://localhost:3000`).
+
+## 2026-09-19 — Stage 15 Next.js Interactive Traffic Dashboard
+
+- Build a polished, responsive Next.js frontend dashboard (`frontend/`) adopting an urban traffic control center theme.
+- All TypeScript types (`frontend/lib/types.ts`) strictly mirror Stage 14 Pydantic REST and WebSocket schemas.
+- `lib/api.ts` provides a centralized REST client with configurable `NEXT_PUBLIC_API_URL` environment support (defaulting to `http://localhost:8000`).
+- `lib/websocket.ts` and `hooks/useSimulationSocket.ts` implement auto-reconnecting WebSocket subscription per simulation session.
+- Client-side history is bounded (60 data points max) for metric sparkline trend visualization (`MetricTrends.tsx`).
+- Interactive SVG grid (`TrafficMap.tsx`) visualizes edge congestion, active signal phases, vehicle positions, and emergency corridor routes without requiring external map services or offline dependencies.
+- Neutral QAOA vs Classical comparison panel (`ClassicalComparison.tsx`) presents exact solver energy and execution time without unsupported quantum advantage claims.
