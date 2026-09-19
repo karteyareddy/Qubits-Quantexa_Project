@@ -13,6 +13,8 @@ from app.adaptive.scheduler import AdaptiveScheduler
 from app.api.errors import APIException
 from app.emergency.service import EmergencyCorridorService
 from app.events.engine import EventEngine
+from app.hardening.determinism import seed_all
+from app.hardening.limits import DEFAULT_PLATFORM_LIMITS
 from app.metrics.service import MetricsService
 from app.optimization.hybrid_solver import HybridSignalOptimizer
 from app.signals.policy import SignalSystem
@@ -59,15 +61,17 @@ class SimulationSession:
     ) -> None:
         self.simulation_id = simulation_id
         self.scenario = scenario
-        self.requested_duration = (
-            duration_seconds if duration_seconds is not None else scenario.duration_seconds
-        )
+        raw_duration = duration_seconds if duration_seconds is not None else scenario.duration_seconds
+        self.requested_duration = DEFAULT_PLATFORM_LIMITS.validate_simulation_duration(raw_duration)
         self.status = "created"  # created, running, paused, completed, failed
         self.created_at = time.time()
         self.seed = seed
         self.adaptive_enabled = adaptive_enabled
         self.events_enabled = events_enabled
         self.emergency_corridor_enabled = emergency_corridor_enabled
+
+        # Set seed for determinism
+        seed_all(seed)
 
         # Initialize domain & engine services
         self.adaptive_config = AdaptiveConfig(

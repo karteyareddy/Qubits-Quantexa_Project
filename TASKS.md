@@ -332,12 +332,23 @@ Verified:
 
 ## Stage 16 — Benchmarking
 
+Status: Complete (2026-09-19)
+
 Run matched baseline/hybrid experiments.
 
 Gate:
 comparison export generated.
 
+Verified:
+- Controlled benchmark subsystem created in `backend/app/benchmark/`.
+- Benchmarking models (`BenchmarkScenario`, `SolverBenchmarkResult`, `BenchmarkSuiteResult`), scenario definitions, and runner implemented.
+- Reproducibility metadata (seed, scenario, duration, timestep, Qiskit/Aer versions, fallback status) captured per run.
+- `docs/BENCHMARK.md` created detailing methodology and results.
+- 7 unit/integration benchmark tests pass (`test_benchmark.py`).
+
 ## Stage 17 — Hardening
+
+Status: Complete (2026-09-19)
 
 Run:
 ```bash
@@ -350,6 +361,20 @@ npm run build
 ```
 
 Gate: all pass.
+
+Verified:
+- Hardening subsystem created in `backend/app/hardening/` (`limits.py`, `validation.py`, `determinism.py`, `health.py`).
+- Input boundary checks and platform resource limits (`PlatformResourceLimits`) enforced across REST API, WebSockets, dynamic events, and simulation lifecycle.
+- Deterministic seed propagation (`seed_all`) and state trajectory SHA-256 fingerprinting (`compute_state_trajectory_hash`, `verify_simulation_equivalence`) implemented.
+- QAOA failure metadata (`fallback_used`, `fallback_reason`, `solver_name`) verified to guarantee classical fallback is never mislabeled as quantum execution.
+- Exception handlers registered for `ValidationError` and `ValueError` returning structured HTTP 400/422 responses.
+- `GET /health` endpoint updated with granular subsystem availability diagnostics.
+- Next.js frontend verified with clean loading, disconnected, error, and fallback state handling.
+- `docs/HARDENING.md` and `docs/DETERMINISM.md` created.
+- 171 pytest backend tests pass cleanly.
+- Ruff check backend passes cleanly.
+- Mypy backend/app passes cleanly.
+- Frontend `npm run lint` and `npm run build` pass cleanly.
 
 ## Stage 18 — Deployment
 

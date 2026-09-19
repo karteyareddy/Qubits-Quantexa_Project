@@ -24,6 +24,9 @@
 | docs/EMERGENCY_GREEN_CORRIDOR.md | Implemented Stage 13 emergency green corridor preemption, ETA prediction, and release control |
 | docs/API.md | Implemented Stage 14 FastAPI REST and WebSocket API contracts and streaming protocol |
 | docs/FRONTEND.md | Implemented Stage 15 Next.js interactive traffic dashboard architecture and component hierarchy |
+| docs/BENCHMARK.md | Implemented Stage 16 controlled benchmark runner, baseline comparison, and reproducibility |
+| docs/HARDENING.md | Implemented Stage 17 platform reliability, resource limits, input validation, and invariant safety |
+| docs/DETERMINISM.md | Implemented Stage 17 seed propagation, state trajectory fingerprinting, and benchmark reproducibility |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

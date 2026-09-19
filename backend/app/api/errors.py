@@ -14,6 +14,7 @@ from app.core.errors import (
 )
 from app.emergency.models import EmergencyCorridorError
 from app.events.models import EventError
+from app.hardening.validation import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,30 @@ def register_exception_handlers(app: FastAPI) -> None:
                     "code": exc.code,
                     "message": exc.message,
                     "details": exc.details,
+                }
+            },
+        )
+
+    @app.exception_handler(ValidationError)
+    async def validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": exc.message,
+                }
+            },
+        )
+
+    @app.exception_handler(ValueError)
+    async def value_error_handler(request: Request, exc: ValueError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "error": {
+                    "code": "RESOURCE_LIMIT_EXCEEDED",
+                    "message": str(exc),
                 }
             },
         )
