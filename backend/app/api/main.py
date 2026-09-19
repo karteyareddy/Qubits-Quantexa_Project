@@ -4,6 +4,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.errors import register_exception_handlers
+from app.api.routes.benchmark import benchmark_router
 from app.api.routes.emergency import emergency_router
 from app.api.routes.events import events_router
 from app.api.routes.health import health_router
@@ -59,6 +60,7 @@ def create_app() -> FastAPI:
     api_v1_router.include_router(events_router)
     api_v1_router.include_router(emergency_router)
     api_v1_router.include_router(metrics_router)
+    api_v1_router.include_router(benchmark_router)
     api_v1_router.include_router(ws_router)
 
     app.include_router(api_v1_router)
