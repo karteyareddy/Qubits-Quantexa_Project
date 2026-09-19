@@ -12,6 +12,7 @@
 | UI_SPEC.md | Next.js UI/UX |
 | QUANTUM_SPEC.md | QUBO/QAOA |
 | SIMULATION_SPEC.md | Simulation |
+| docs/TRAFFIC_SIMULATION.md | Implemented Stage 4 simulation design and limitations |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

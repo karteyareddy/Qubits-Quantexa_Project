@@ -94,6 +94,16 @@ Refactor existing traffic simulator into backend services.
 Gate:
 deterministic 60-second simulation passes.
 
+Verified:
+- Stage 3 demo-network routes drive the simulation without a duplicate graph model.
+- Scheduled and locally seeded arrivals are deterministic.
+- Vehicle movement, edge transitions, completion, capacity blocking, queues, waiting, and emergency identity are covered.
+- Low-traffic, congested, and emergency-vehicle scenarios are available.
+- Repeated 60-second congested trajectories produce the same SHA-256 digest.
+- 50 unit, 3 integration, and 4 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
+
 ## Stage 5 — Signals
 
 Implement:

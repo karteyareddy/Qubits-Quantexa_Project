@@ -64,6 +64,8 @@ npm run build
 - Optional OSMnx provider normalized to the same `Network` domain contract.
 - Directed/parallel-edge-preserving NetworkX normalization and deterministic candidate routes.
 - Validated JSON network cache with configurable location and no pickle loading.
+- Deterministic discrete-time traffic simulation with scheduled arrivals, movement, capacity, queues, completion, and serializable snapshots.
+- Low-traffic, congested, emergency-vehicle, and locally seeded demand scenarios.
 - Minimal backend and frontend dependency manifests, with backend development tools separated.
 - Container definitions for the two application skeletons.
 
@@ -75,6 +77,10 @@ Stage 2 complete: typed domain contracts exist; simulation, routing, signals, an
 
 Stage 3 complete: offline and optional OSM network providers, normalization, caching, validation, and candidate routing exist. Traffic simulation, vehicle movement, signal control, QUBO/QAOA, emergency corridors, dynamic events, and routing APIs remain pending.
 
+## Stage 4 status
+
+Stage 4 complete: the offline simulation engine models routed vehicle arrivals, edge movement, capacity blocking, emergent queues, waiting, completion, and emergency identity. See `TRAFFIC_SIMULATION.md`. Signal control, formal metrics, events, optimization, APIs, and live publication remain pending.
+
 OSM mode is optional and installed separately:
 
 ```bash
@@ -84,6 +90,6 @@ python -m pip install -r requirements-osm.txt
 
 ## Intentionally not implemented
 
-The current application does not implement traffic simulation, vehicle movement, traffic-signal control, route or signal QUBOs in the new backend, QAOA, D-Wave integration, emergency green corridors, dynamic-event handling, metric formulas, benchmarking, routing REST endpoints, maps, charts, WebSockets, or the final dashboard.
+The current application does not implement traffic-signal control, route or signal QUBOs in the new backend, QAOA, D-Wave integration, emergency green corridors, dynamic-event handling, formal metric formulas, environmental estimates, benchmarking, routing REST endpoints, maps, charts, WebSockets, or the final dashboard.
 
 The root Streamlit files and `legacy/` directory remain unchanged and available as migration references. Later stages must pass their documented gates before adding these capabilities.

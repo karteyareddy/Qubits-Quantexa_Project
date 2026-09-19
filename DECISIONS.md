@@ -29,3 +29,13 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Preserve the legacy congestion multiplier but standardize domain travel time to seconds.
 - Raise an explicit routing error when no path exists; never fabricate `[origin, destination]`.
 - Cache only validated JSON domain models. Do not load legacy pickle caches in the new backend.
+
+## 2026-09-19 — Stage 4 simulation model
+
+- Use a custom one-second discrete-time engine with no external simulator dependency.
+- Reuse the Stage 2 `Vehicle` and Stage 3 `Network`/`Route` contracts.
+- Treat edge capacity as maximum simultaneous vehicle occupancy, rounded down to an integer with a minimum of one.
+- Derive queues from vehicles blocked from entering their next edge; do not fabricate queue values.
+- Process vehicles by stable ID and use local seeded random generators for reproducibility.
+- Keep intersection admission behind `IntersectionEntryPolicy`; Stage 4 permits all intersections after capacity and closure checks.
+- Represent emergency identity and priority metadata without implementing emergency signal priority.

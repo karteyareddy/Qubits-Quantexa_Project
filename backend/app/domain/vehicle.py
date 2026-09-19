@@ -41,6 +41,10 @@ class Vehicle(DomainModel):
     emergency_subtype: EmergencySubtype | None = None
     priority_weight: int = Field(default=1, ge=1, le=100)
     state: VehicleState = VehicleState.PENDING
+    arrival_time_seconds: float = Field(default=0.0, ge=0.0)
+    completion_time_seconds: float | None = Field(default=None, ge=0.0)
+    total_travel_time_seconds: float = Field(default=0.0, ge=0.0)
+    current_route_index: int = Field(default=0, ge=0)
     current_node_id: Identifier | None = None
     current_edge_id: Identifier | None = None
     position_on_edge: float = Field(default=0.0, ge=0.0, le=1.0)
@@ -58,4 +62,13 @@ class Vehicle(DomainModel):
             raise ValueError("emergency vehicles require an emergency subtype")
         if not self.is_emergency and self.emergency_subtype is not None:
             raise ValueError("non-emergency vehicles cannot have an emergency subtype")
+        if self.state is VehicleState.ARRIVED and self.completion_time_seconds is None:
+            raise ValueError("arrived vehicles require a completion timestamp")
+        if self.state is not VehicleState.ARRIVED and self.completion_time_seconds is not None:
+            raise ValueError("only arrived vehicles may have a completion timestamp")
+        if (
+            self.completion_time_seconds is not None
+            and self.completion_time_seconds < self.arrival_time_seconds
+        ):
+            raise ValueError("vehicle completion cannot precede arrival")
         return self

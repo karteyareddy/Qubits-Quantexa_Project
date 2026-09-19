@@ -99,6 +99,21 @@ OSMNetworkProvider -----+            |
 - Candidate routing raises an explicit `RouteNotFoundError`; it never fabricates a direct edge.
 - Routing remains an internal service with no Stage 3 REST endpoint.
 
+## Stage 4 simulation boundary
+
+```text
+SimulationScenario + Stage 3 Network/Route
+        -> TrafficSimulation
+        -> capacity + intersection-entry policy
+        -> SimulationState snapshots
+```
+
+- The custom engine advances in deterministic, configurable discrete timesteps.
+- Vehicle state reuses the Stage 2 domain model and adds runtime timing/progress fields.
+- Occupancy and queues are derived from active vehicle positions and blocked transitions.
+- `IntersectionEntryPolicy` permits Stage 5 signal control without adding signal behavior now.
+- The simulation package has no FastAPI, WebSocket, UI, optimizer, or quantum dependency.
+
 ## Live flow
 
 ```text
