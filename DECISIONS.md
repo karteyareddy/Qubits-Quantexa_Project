@@ -76,3 +76,11 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Include a deterministic energy evaluator $E(x) = x^T Q x + \text{offset}$ and brute-force validation solver for ground-truth verification.
 - Decode binary solutions into serializable `SignalSchedule` domain models.
 - Keep QUBO formulation strictly solver-independent without introducing QAOA or quantum circuit dependencies.
+
+## 2026-09-19 — Stage 9 QAOA Solver for Signal-Control QUBO
+
+- Implement parameterized QAOA quantum circuit using Qiskit 2.5.2 and Qiskit Aer 0.17.2 simulator.
+- Perform exact mathematical QUBO-to-Ising mapping ($x_i = \frac{1 - z_i}{2}$) with verified energy equivalence $E_{\text{Ising}}(z) \equiv E_{\text{QUBO}}(x)$.
+- Explicitly account for Qiskit big-endian measurement string formatting in `app.quantum.qaoa`.
+- Filter quantum measurement distributions for feasible bitstrings satisfying Stage 8 phase constraints before selecting the minimum-energy signal schedule.
+- Maintain solver transparency by explicitly reporting `solver_name="qaoa"` and `backend_name="qiskit_aer"`.

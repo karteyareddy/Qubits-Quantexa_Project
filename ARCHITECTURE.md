@@ -218,5 +218,7 @@ Emergency request
  -> simulate
  -> arrival
  -> restore previous plans
- -> metrics
 ```
+
+## Stage 9 QAOA Architecture
+Stage 9 introduces the first actual QAOA implementation (`app.quantum`), constructing parameterized quantum circuits using Qiskit 2.5.2 and executing simulation on Qiskit Aer 0.17.2 against Stage 8 signal-control QUBOs ($x(i,p,t) \in \{0, 1\}$).

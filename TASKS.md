@@ -190,10 +190,22 @@ Verified:
 
 ## Stage 9 — QAOA
 
+Status: Complete (2026-09-19)
+
 Implement Qiskit Aer QAOA.
 
 Gate:
 small known QUBO solves and returns metadata.
+
+Verified:
+- `QAOAConfig` and `QAOAResult` typed domain models created in `backend/app/quantum/`.
+- Exact QUBO-to-Ising conversion utility maps $x_i = (1 - z_i)/2$ with verified energy equivalence $E_{\text{Ising}}(z) \equiv E_{\text{QUBO}}(x)$.
+- Parameterized QAOA quantum circuit builder constructs depth-$p$ layers using Qiskit 2.5.2 standard gates (`h`, `rz`, `rzz`, `rx`, `measure`).
+- `QAOASolver` executes simulation on Qiskit Aer 0.17.2, optimizes parameters via COBYLA, and reverses Qiskit big-endian measurement bitstrings.
+- Quantum output distributions are filtered for feasible signal phase assignments, returning typed `SignalSchedule` and complete execution metadata (`solver_name="qaoa"`, `backend_name="qiskit_aer"`).
+- 90 unit, 11 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 10 — Hybrid optimizer
 

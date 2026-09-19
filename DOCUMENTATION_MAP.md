@@ -17,6 +17,7 @@
 | docs/TRAFFIC_METRICS.md | Implemented Stage 6 metric definitions and environmental assumptions |
 | docs/OPTIMIZATION_MIGRATION.md | Implemented Stage 7 Priority-Aware MTF optimization design and limitations |
 | docs/SIGNAL_QUBO.md | Implemented Stage 8 Signal-Control QUBO formulation design and constraints |
+| docs/QAOA.md | Implemented Stage 9 QAOA quantum optimization engine design and circuit mapping |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |
