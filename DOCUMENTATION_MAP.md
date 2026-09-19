@@ -19,6 +19,7 @@
 | docs/SIGNAL_QUBO.md | Implemented Stage 8 Signal-Control QUBO formulation design and constraints |
 | docs/QAOA.md | Implemented Stage 9 QAOA quantum optimization engine design and circuit mapping |
 | docs/HYBRID_OPTIMIZATION.md | Implemented Stage 10 hybrid quantum-classical signal optimizer design and refinement |
+| docs/ADAPTIVE_CONTROL.md | Implemented Stage 11 closed-loop adaptive traffic optimization loop and safety policies |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

@@ -229,10 +229,22 @@ Verified:
 
 ## Stage 11 — Adaptive simulation
 
+Status: Complete (2026-09-19)
+
 Apply optimized plans every interval.
 
 Gate:
 300-second simulation runs without illegal transitions.
+
+Verified:
+- `AdaptiveConfig`, `AdaptiveOptimizationEvent`, and `AdaptiveRunResult` domain models implemented in `backend/app/adaptive/`.
+- `TrafficObserver` extracts unmutated snapshot observations from `TrafficSimulation`.
+- `AdaptiveScheduler` manages optimization cadence at explicit control boundaries.
+- `AdaptiveSignalPolicy` safely applies `SignalSchedule` phase decisions to controlled intersections.
+- `AdaptiveSimulationRunner` executes closed-loop simulation, state-dependent QUBO regeneration, hybrid QAOA optimization, and Stage 6 metrics collection.
+- 98 unit, 13 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 12 — Events
 

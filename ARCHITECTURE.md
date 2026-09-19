@@ -225,3 +225,6 @@ Stage 9 introduces the first actual QAOA implementation (`app.quantum`), constru
 
 ## Stage 10 Hybrid Optimization Architecture
 Stage 10 builds the hybrid quantum-classical signal optimizer (`app.optimization.hybrid_solver`), orchestrating Stage 8 QUBO building, Stage 9 QAOA, top-K candidate extraction, feasibility filtering, local 1-bit flip classical refinement, and classical exact baseline comparison.
+
+## Stage 11 Adaptive Traffic Optimization Loop
+Stage 11 connects discrete simulation, traffic observation (`TrafficObserver`), state-dependent QUBO building, Stage 10 hybrid optimization, safe schedule application (`AdaptiveSignalPolicy`), and Stage 6 metrics calculation into a receding-horizon adaptive controller (`app.adaptive`).

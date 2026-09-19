@@ -92,3 +92,11 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Perform local 1-bit flip classical refinement on the best feasible QAOA candidate, accepting neighbor assignments only when feasibility is preserved and energy strictly decreases.
 - Enforce strict fallback reporting: if QAOA yields no feasible candidate and classical fallback is used, `solver_name` is explicitly set to `"classical_reference"` and `fallback_used = True`.
 - Compute exact energy gap relative to classical reference enumeration for small instances ($N \le 20$).
+
+## 2026-09-19 — Stage 11 Adaptive Traffic Optimization Loop
+
+- Structure closed-loop adaptive control under `backend/app/adaptive/` using `AdaptiveSimulationRunner`.
+- Enforce snapshot immutability via `TrafficObserver`: observing traffic snapshot does not mutate simulation state before schedule application.
+- Trigger optimization at explicit control boundaries $t = k \cdot \text{control\_interval\_seconds}$ via `AdaptiveScheduler`.
+- Safely apply `SignalSchedule` phase decisions through `AdaptiveSignalPolicy` without bypassing signal safety rules or yellow clearance.
+- Integrate Stage 6 `MetricsService` to return complete `ScenarioMetrics` alongside chronological `AdaptiveOptimizationEvent` logs.
