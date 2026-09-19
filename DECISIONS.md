@@ -48,3 +48,13 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Keep edge capacity and closure checks independent and authoritative after signal permission.
 - Evaluate permission at the actual edge-crossing time within the discrete simulation step.
 - Use `IntersectionEntryPolicy` as the replacement seam for later controllers; do not add adaptive or optimization behavior now.
+
+## 2026-09-19 — Stage 6 metric semantics
+
+- Count only spawned active and completed vehicles; pending future arrivals are excluded.
+- Average waiting across all spawned vehicles so current active delay remains visible.
+- Average travel only across completed vehicles using completion time minus arrival time.
+- Calculate queue maximum and average from supplied state observations; never infer history from one final state.
+- Estimate moving time as total travel time minus waiting time, clamped at zero to prevent double counting.
+- Default prototype rates are 2.4 L/hour moving, 0.08 L/hour idle, and 2.31 kg CO2/liter; all remain configurable and explicitly uncalibrated.
+- Keep metric calculation independent from controllers and optimization.

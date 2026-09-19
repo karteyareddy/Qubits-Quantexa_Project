@@ -3,7 +3,7 @@
 import pytest
 from app.domain.emergency import EmergencyMission, EmergencyMissionStatus
 from app.domain.event import EventStatus, EventType, TrafficEvent
-from app.domain.metrics import EmergencyMetrics, EnvironmentalMetrics, TrafficMetrics
+from app.domain.metrics import EnvironmentalMetrics
 from app.domain.route import Route
 from pydantic import ValidationError
 
@@ -81,27 +81,24 @@ def test_emergency_mission_rejects_invalid_identity_and_timeline() -> None:
 
 
 def test_valid_metrics_and_negative_values_rejected() -> None:
-    metrics = TrafficMetrics(
-        simulation_time_seconds=30.0,
-        average_wait_seconds=2.5,
-        total_wait_seconds=25.0,
-        queue_length=3,
-        maximum_queue_length=5,
-        throughput=8,
-        average_travel_time_seconds=42.0,
-        congestion=0.4,
-        environmental=EnvironmentalMetrics(
-            fuel_liters_estimate=0.25,
-            co2_kg_estimate=0.58,
-        ),
-        emergency=EmergencyMetrics(
-            emergency_travel_time_seconds=35.0,
-            emergency_completed=True,
-        ),
+    metrics = EnvironmentalMetrics(
+        fuel_liters=0.25,
+        co2_kg=0.58,
+        fuel_liters_per_vehicle=0.25,
+        co2_kg_per_vehicle=0.58,
+        moving_fuel_liters=0.2,
+        idle_fuel_liters=0.05,
     )
 
-    assert metrics.throughput == 8
-    assert metrics.environmental.co2_kg_estimate == 0.58
+    assert metrics.co2_kg == 0.58
+    assert metrics.is_estimate is True
 
     with pytest.raises(ValidationError):
-        EnvironmentalMetrics(fuel_liters_estimate=-1.0, co2_kg_estimate=0.0)
+        EnvironmentalMetrics(
+            fuel_liters=-1.0,
+            co2_kg=0.0,
+            fuel_liters_per_vehicle=0.0,
+            co2_kg_per_vehicle=0.0,
+            moving_fuel_liters=0.0,
+            idle_fuel_liters=0.0,
+        )

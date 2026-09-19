@@ -129,6 +129,22 @@ Network incoming edges -> SignalApproach mapping
 - Signal permission is evaluated at the vehicle's exact crossing time within a simulation step.
 - Timing is classical and fixed; no queue adaptation, optimization, or quantum logic exists in Stage 5.
 
+## Stage 6 metrics boundary
+
+```text
+Simulation states -> MetricsService
+        -> traffic/queue/emergency aggregation
+        -> prototype environmental estimates
+        -> ScenarioMetrics
+        -> future evaluation and benchmarking
+```
+
+- Metrics consume simulation outcomes and never choose routes, phases, or optimizations.
+- Travel outcomes use completed vehicles; waiting outcomes include all spawned vehicles.
+- Historical queue metrics use explicitly supplied deterministic state observations.
+- Fuel and CO2 are labeled configurable prototype estimates, not calibrated measurements.
+- The result contract is controller-independent for fair future comparisons.
+
 ## Live flow
 
 ```text

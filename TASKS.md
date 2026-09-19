@@ -133,6 +133,16 @@ Implement traffic/environment metrics.
 Gate:
 baseline experiment produces reproducible metrics.
 
+Verified:
+- Spawned, completed, active, completion-rate, throughput, waiting, and completed-trip travel metrics are deterministic.
+- Queue maximum and average use real supplied trajectory observations; final queue uses the final state.
+- Per-vehicle, emergency, edge, and intersection-approach results are typed and serializable.
+- Fuel and CO2 are explicit configurable prototype estimates with zero-safe per-vehicle values.
+- Repeated congested fixed-time runs produce identical metrics and the same SHA-256 digest.
+- 72 unit, 8 integration, and 6 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
+
 ## Stage 7 — Existing Priority-Aware MTF migration
 
 Refactor existing `priority_aware_mtf.py` logic into a clean optimization module.

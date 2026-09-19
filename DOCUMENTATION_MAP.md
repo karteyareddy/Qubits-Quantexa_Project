@@ -14,6 +14,7 @@
 | SIMULATION_SPEC.md | Simulation |
 | docs/TRAFFIC_SIMULATION.md | Implemented Stage 4 simulation design and limitations |
 | docs/TRAFFIC_SIGNALS.md | Implemented Stage 5 fixed-time signal design and safety rules |
+| docs/TRAFFIC_METRICS.md | Implemented Stage 6 metric definitions and environmental assumptions |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

@@ -2,7 +2,15 @@
 
 from app.domain.emergency import EmergencyMission, EmergencyMissionStatus
 from app.domain.event import EventStatus, EventType, TrafficEvent
-from app.domain.metrics import EmergencyMetrics, EnvironmentalMetrics, TrafficMetrics
+from app.domain.metrics import (
+    EdgeTrafficMetrics,
+    EmergencyMetrics,
+    EnvironmentalMetrics,
+    IntersectionApproachMetrics,
+    ScenarioMetrics,
+    TrafficMetrics,
+    VehicleMetrics,
+)
 from app.domain.network import Coordinates, Network, NetworkEdge, NetworkNode
 from app.domain.optimization import (
     ExecutionClass,
@@ -20,6 +28,7 @@ from app.domain.vehicle import EmergencySubtype, Vehicle, VehicleState, VehicleT
 __all__ = [
     "ApproachSignalState",
     "Coordinates",
+    "EdgeTrafficMetrics",
     "EmergencyMetrics",
     "EmergencyMission",
     "EmergencyMissionStatus",
@@ -29,6 +38,7 @@ __all__ = [
     "EventType",
     "ExecutionClass",
     "FeasibilityResult",
+    "IntersectionApproachMetrics",
     "Network",
     "NetworkEdge",
     "NetworkNode",
@@ -38,6 +48,7 @@ __all__ = [
     "Route",
     "Scenario",
     "ScenarioConfiguration",
+    "ScenarioMetrics",
     "SignalIndication",
     "SignalPhase",
     "SignalState",
@@ -45,6 +56,7 @@ __all__ = [
     "TrafficEvent",
     "TrafficMetrics",
     "Vehicle",
+    "VehicleMetrics",
     "VehicleState",
     "VehicleType",
 ]
