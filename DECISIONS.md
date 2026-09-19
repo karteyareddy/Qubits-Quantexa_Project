@@ -67,3 +67,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Update edge congestion factor ($1.0 + c / 20.0$) and edge travel times dynamically after each subproblem solve.
 - Require explicit solver metadata (`solver_name`, `backend_name`, `execution_class`, `fallback_used`, `fallback_reason`) when falling back to classical samplers.
 - Clarify that Stage 7 optimizes route allocation choice, whereas future Stage 8+ optimizes adaptive signal timing.
+
+## 2026-09-19 — Stage 8 Signal-Control QUBO formulation
+
+- Define binary signal variables $x(i, p, t)$ for intersection $i$, valid green phase $p$, and time interval $t \in [0, H-1]$.
+- Enforce exactly-one-phase constraint $\sum_p x(i, p, t) = 1$ via quadratic penalty $A \cdot (\sum_p x(i, p, t) - 1)^2$.
+- Combine traffic surrogate costs: queue length, waiting time, throughput rewards, emergency priority weighting, and inter-interval switching penalties.
+- Include a deterministic energy evaluator $E(x) = x^T Q x + \text{offset}$ and brute-force validation solver for ground-truth verification.
+- Decode binary solutions into serializable `SignalSchedule` domain models.
+- Keep QUBO formulation strictly solver-independent without introducing QAOA or quantum circuit dependencies.

@@ -171,10 +171,22 @@ Verified:
 
 ## Stage 8 — Signal QUBO
 
+Status: Complete (2026-09-19)
+
 Create signal decision QUBO.
 
 Gate:
 synthetic state -> QUBO -> legal decoded signal plan.
+
+Verified:
+- Binary decision variables x(i, p, t) defined with deterministic index naming in `backend/app/signals/qubo/variables.py`.
+- Exactly-one-phase constraint A*(sum_p x(i,p,t) - 1)^2 and surrogate traffic cost terms (queue, waiting, throughput, emergency, switching) built in `SignalQuboBuilder`.
+- Exact energy evaluator and brute-force reference solver validate matrix ground truth.
+- Solution decoder produces serializable `SignalSchedule` domain models.
+- Hand-checkable 1-intersection 2-phase expansion unit test verifies exact polynomial coefficients.
+- 86 unit, 10 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 9 — QAOA
 

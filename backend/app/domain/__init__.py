@@ -22,7 +22,11 @@ from app.domain.optimization import (
 )
 from app.domain.route import Route
 from app.domain.scenario import Scenario, ScenarioConfiguration
-from app.domain.signal import ApproachSignalState, SignalIndication, SignalPhase, SignalState
+from app.domain.signal_qubo import (
+    IntervalSignalDecision,
+    SignalQuboResult,
+    SignalSchedule,
+)
 from app.domain.vehicle import EmergencySubtype, Vehicle, VehicleState, VehicleType
 
 __all__ = [
@@ -39,6 +43,7 @@ __all__ = [
     "ExecutionClass",
     "FeasibilityResult",
     "IntersectionApproachMetrics",
+    "IntervalSignalDecision",
     "Network",
     "NetworkEdge",
     "NetworkNode",
@@ -51,6 +56,8 @@ __all__ = [
     "ScenarioMetrics",
     "SignalIndication",
     "SignalPhase",
+    "SignalQuboResult",
+    "SignalSchedule",
     "SignalState",
     "SolverMetadata",
     "TrafficEvent",

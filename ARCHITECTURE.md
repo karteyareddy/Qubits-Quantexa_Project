@@ -162,6 +162,23 @@ Stage 3 Network & Candidate Routes + Vehicles
 - Solution decoder produces explicit feasibility results and violations.
 - Solver abstraction captures fallback metadata and execution class (`CLASSICAL`, `QUANTUM`, `CLASSICAL_FALLBACK`).
 
+## Stage 8 Signal QUBO boundary
+
+```text
+SimulationState + Network + SignalQuboConfig
+        -> SignalQuboBuilder
+        -> x(i, p, t) variables + H_constraint + H_traffic_surrogate
+        -> Q matrix + linear/quadratic terms + constant offset
+        -> evaluator / reference_solver / future QAOA (Stage 9)
+        -> decode_signal_qubo_solution -> SignalSchedule
+```
+
+- Formulates binary signal timing decisions $x(i, p, t)$ over short discrete horizons $H$.
+- Enforces exactly-one-phase constraint $\sum_p x(i, p, t) = 1$ via quadratic penalty $A$.
+- Minimizes surrogate traffic cost: queue length, waiting pressure, emergency vehicles, throughput rewards, and switching penalties.
+- Decodes binary assignments into typed `SignalSchedule` domain models.
+- Formulation is solver-independent and provides exact $Q_{i, j}$ matrices for Stage 9 QAOA.
+
 ## Live flow
 
 ```text
