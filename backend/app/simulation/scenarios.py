@@ -89,11 +89,12 @@ def _scenario(
     seed: int,
     network: Network,
     arrivals: tuple[ScheduledArrival, ...],
+    duration_seconds: float = 300.0,
 ) -> SimulationScenario:
     return SimulationScenario(
         scenario_id=scenario_id,
         seed=seed,
-        duration_seconds=120.0,
+        duration_seconds=duration_seconds,
         network=network,
         arrivals=arrivals,
         configuration=SimulationConfiguration(timestep_seconds=1.0),

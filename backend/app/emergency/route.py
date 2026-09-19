@@ -35,26 +35,64 @@ class EmergencyRouteExtractor:
                     f"No valid route available from '{vehicle.origin}' to '{vehicle.destination}' for vehicle '{vehicle.vehicle_id}'."
                 ) from exc
 
-        # Check if any edge in route is closed or missing
+        # Only inspect the route that the vehicle has not traversed yet. A vehicle
+        # already occupying an edge is allowed to clear it before taking a detour.
         edge_map = {e.edge_id: e for e in network.edges}
-        has_blocked_edge = False
-        for edge_id in route.edge_ids:
-            if edge_id not in edge_map or edge_map[edge_id].closed:
-                has_blocked_edge = True
-                break
+        first_untraversed_index = (
+            vehicle.current_route_index + 1 if vehicle.current_edge_id is not None else 0
+        )
+        remaining_edge_ids = route.edge_ids[first_untraversed_index:]
+        has_blocked_edge = any(
+            edge_id not in edge_map or edge_map[edge_id].closed
+            for edge_id in remaining_edge_ids
+        )
 
         if has_blocked_edge:
-            # Attempt dynamic rerouting from vehicle's current node/position to destination
-            start_node = vehicle.current_node_id or vehicle.origin
+            # Finish the current edge, then route from its target. This preserves
+            # physical continuity while avoiding every closed edge ahead.
+            if vehicle.current_edge_id is not None:
+                current_edge = edge_map.get(vehicle.current_edge_id)
+                if current_edge is None:
+                    raise EmergencyRouteError(
+                        f"Current edge '{vehicle.current_edge_id}' is missing from the network."
+                    )
+                start_node = current_edge.target
+            else:
+                start_node = vehicle.current_node_id or vehicle.origin
             try:
                 candidate_routes = generate_candidate_routes(network, start_node, vehicle.destination)
-                route = candidate_routes[0]
+                detour = candidate_routes[0]
+                route = EmergencyRouteExtractor._merge_active_route(vehicle, detour)
             except Exception as exc:
                 raise EmergencyRouteError(
                     f"Route for emergency vehicle '{vehicle.vehicle_id}' is blocked by road closure and rerouting failed."
                 ) from exc
 
         return route
+
+    @staticmethod
+    def _merge_active_route(vehicle: Vehicle, detour: Route) -> Route:
+        """Join the already-traversed route prefix to a new remaining route."""
+        current_route = vehicle.route
+        if current_route is None or vehicle.current_edge_id is None:
+            return detour
+
+        prefix_edge_count = vehicle.current_route_index + 1
+        prefix_edges = current_route.edge_ids[:prefix_edge_count]
+        prefix_nodes = current_route.node_ids[: prefix_edge_count + 1]
+        if not prefix_nodes or not detour.node_ids or prefix_nodes[-1] != detour.node_ids[0]:
+            raise EmergencyRouteError("Detour does not connect to the vehicle's current edge.")
+
+        edge_ids = prefix_edges + detour.edge_ids
+        node_ids = prefix_nodes + detour.node_ids[1:]
+        return Route(
+            route_id=f"reroute:{vehicle.vehicle_id}:{detour.route_id}",
+            node_ids=node_ids,
+            edge_ids=edge_ids,
+            estimated_travel_time_seconds=detour.estimated_travel_time_seconds,
+            distance_m=detour.distance_m,
+            cost=detour.cost,
+        )
 
     @staticmethod
     def extract_intersection_sequence(

@@ -198,3 +198,42 @@ def test_emergency_corridor_service_lifecycle() -> None:
     history = service.corridor_history
     assert len(history) == 1
     assert history[0].status == CorridorStatus.COMPLETED
+
+
+def test_corridor_reroute_updates_vehicle_route() -> None:
+    scenario = low_traffic_scenario()
+    sim = TrafficSimulation(scenario)
+    service = EmergencyCorridorService()
+    routes = generate_candidate_routes(scenario.network, "I1", "I6")
+    original_route = routes[0]
+    emergency = Vehicle(
+        vehicle_id="amb_detour",
+        vehicle_type=VehicleType.EMERGENCY,
+        is_emergency=True,
+        emergency_subtype=EmergencySubtype.AMBULANCE,
+        origin="I1",
+        destination="I6",
+        route=original_route,
+        candidate_routes=routes,
+        state=VehicleState.PENDING,
+    )
+    sim._state = sim.state.model_copy(
+        update={"pending_vehicles": sim.state.pending_vehicles + (emergency,)}
+    )
+    sim.step(1.0)
+    service.update(sim)
+
+    blocked_edge_id = original_route.edge_ids[1]
+    edge_map = {edge.edge_id: edge for edge in scenario.network.edges}
+    edge_map[blocked_edge_id].closed = True
+    active_corridors = service.update(sim)
+
+    rerouted_vehicle = next(
+        vehicle
+        for vehicle in sim.state.active_vehicles
+        if vehicle.vehicle_id == emergency.vehicle_id
+    )
+    assert len(active_corridors) == 1
+    assert rerouted_vehicle.route == active_corridors[0].route
+    assert rerouted_vehicle.current_edge_id == original_route.edge_ids[0]
+    assert blocked_edge_id not in rerouted_vehicle.route.edge_ids[1:]

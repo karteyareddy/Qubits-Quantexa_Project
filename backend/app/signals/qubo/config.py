@@ -8,7 +8,7 @@ from app.domain.base import DomainModel
 class SignalQuboConfig(DomainModel):
     """Configurable weights, penalties, and horizon parameters for Signal QUBO."""
 
-    horizon_intervals: int = Field(default=3, ge=1)
+    horizon_intervals: int = Field(default=1, ge=1)
     interval_seconds: float = Field(default=10.0, gt=0.0)
     constraint_penalty: float = Field(default=100.0, ge=0.0)
     queue_weight: float = Field(default=2.0, ge=0.0)

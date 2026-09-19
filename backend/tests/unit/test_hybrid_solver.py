@@ -65,3 +65,41 @@ def test_hybrid_optimizer_hybrid_mode_with_qaoa() -> None:
     assert len(res.candidates) > 0
     assert res.energy_gap is not None
     assert abs(res.selected_energy - 0.0) < 1e-6
+
+
+def test_default_live_qubo_fits_configured_aer_limit() -> None:
+    config = HybridOptimizerConfig()
+    assert config.qubo_config.horizon_intervals == 1
+
+
+def test_oversized_qubo_uses_controlled_fallback_before_aer() -> None:
+    intersections = [f"I{index}" for index in range(16)]
+    variable_names = [
+        f"x_{intersection}_P{phase}_T0"
+        for intersection in intersections
+        for phase in range(2)
+    ]
+    variable_map = {
+        (intersection, phase, 0): f"x_{intersection}_P{phase}_T0"
+        for intersection in intersections
+        for phase in range(2)
+    }
+    legal_phases = {
+        intersection: (SignalPhase.EW_GREEN, SignalPhase.NS_GREEN)
+        for intersection in intersections
+    }
+    qubo = {(name, name): -1.0 for name in variable_names}
+
+    result = HybridSignalOptimizer().optimize_qubo(
+        qubo,
+        0.0,
+        variable_names,
+        variable_map,
+        legal_phases,
+        1,
+    )
+
+    assert result.fallback_used is True
+    assert result.fallback_reason is not None
+    assert "requires 32 qubits" in result.fallback_reason
+    assert "configured Aer limit of 30" in result.fallback_reason

@@ -128,16 +128,23 @@ def _apply_accident(
 
     edge = edge_map[target_edge_id]
     original_capacity = edge.capacity
+    original_congestion = edge.congestion
+    original_travel_time = edge.travel_time_seconds
     reduced_capacity = max(1.0, original_capacity * event.capacity_factor)
+    incident_congestion = max(original_congestion, event.severity * 40.0)
 
     active_effects[event.event_id] = {
         "type": "accident",
         "edge_id": target_edge_id,
         "original_capacity": original_capacity,
+        "original_congestion": original_congestion,
+        "original_travel_time": original_travel_time,
     }
 
     # Update edge capacity in simulation network
     edge.capacity = reduced_capacity
+    edge.congestion = incident_congestion
+    edge.travel_time_seconds = original_travel_time * (1.0 + incident_congestion / 20.0)
 
     duration = event.duration_seconds or 0.0
     return EventRecord(
@@ -153,6 +160,7 @@ def _apply_accident(
             "original_capacity": original_capacity,
             "reduced_capacity": reduced_capacity,
             "severity": event.severity,
+            "travel_time_multiplier": 1.0 + incident_congestion / 20.0,
         },
     )
 
@@ -252,6 +260,8 @@ def restore_event_effect(
         edge_id = effect["edge_id"]
         if edge_id in edge_map:
             edge_map[edge_id].capacity = effect["original_capacity"]
+            edge_map[edge_id].congestion = effect["original_congestion"]
+            edge_map[edge_id].travel_time_seconds = effect["original_travel_time"]
     elif effect["type"] == "road_closure":
         edge_id = effect["edge_id"]
         if edge_id in edge_map:

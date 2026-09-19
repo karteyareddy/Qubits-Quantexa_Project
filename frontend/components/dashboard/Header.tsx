@@ -3,6 +3,7 @@
 import React from 'react';
 import { WebSocketConnectionStatus } from '../../lib/types';
 import { formatTime } from '../../lib/formatters';
+import { useTheme } from '../../context/ThemeContext';
 
 interface HeaderProps {
   simulationTime: number;
@@ -19,6 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   scenarioName,
   activeSimId,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   const getWsBadge = () => {
     switch (wsStatus) {
       case 'LIVE':
@@ -37,67 +40,73 @@ export const Header: React.FC<HeaderProps> = ({
   const badge = getWsBadge();
 
   return (
-    <header className="bg-slate-900 border-b border-slate-800 text-slate-100 px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-lg">
-      <div className="flex items-center space-x-4">
-        <div className="bg-gradient-to-tr from-cyan-600 to-indigo-600 p-2.5 rounded-xl shadow-md">
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
+    <header className="ops-header px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      {/* Brand & Mission Statement */}
+      <div className="header-brand flex items-center space-x-3.5">
+        <div className="header-logo-icon" style={{ padding: '2px', background: 'transparent' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={theme === 'light' ? '/q-trafficx-icon.png' : '/q-trafficx-icon-white.png'}
+            alt="Q-TrafficX Logo"
+            className="w-8 h-8 object-contain"
+            style={{ width: '2rem', height: '2rem' }}
+          />
         </div>
         <div>
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-200 to-indigo-300 bg-clip-text text-transparent">
-            Quantum Traffic Control Center
+          <h1 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
+            <span>Q-Traffic<span style={{ color: '#00ff9d' }}>X</span></span>
+            <span className="text-slate-400 text-sm font-medium">Operations</span>
           </h1>
           <p className="text-xs text-slate-400 font-medium">
-            Hybrid QAOA Signal Optimization Engine & Dynamic Corridor System
+            Quantum Adaptive Traffic Optimization • Emergency Preemption
           </p>
         </div>
       </div>
 
-      <div className="flex items-center space-x-6">
-        {/* Technical Quantum Status */}
-        <div className="hidden lg:flex items-center space-x-2 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 text-xs">
-          <span className="text-cyan-400 font-semibold">Qiskit Aer</span>
-          <span className="text-slate-500">|</span>
-          <span className="text-slate-300">QAOA p=1</span>
-        </div>
-
-        {/* Simulation Time Display */}
-        <div className="bg-slate-950 px-4 py-1.5 rounded-lg border border-cyan-900/40 text-center">
-          <span className="text-xs text-slate-400 block font-mono">SIMULATION TIME</span>
-          <span className="text-lg font-bold font-mono text-cyan-300">
+      {/* Telemetry & Controls */}
+      <div className="header-telemetry flex items-center space-x-4">
+        {/* Simulation Time Clock Display */}
+        <div className="header-clock px-4 py-2 rounded-xl flex flex-col items-center justify-center min-w-[140px] shadow-sm">
+          <span className="text-[10px] text-slate-400 block font-mono uppercase tracking-widest leading-none mb-1">
+            SIMULATION CLOCK
+          </span>
+          <span className="text-base font-bold font-mono text-cyan-400 block leading-tight text-center">
             T = {formatTime(simulationTime)}
           </span>
         </div>
 
-        {/* Status Badges */}
-        <div className="flex items-center space-x-3">
-          <div className="flex flex-col items-end">
-            <span
-              className="text-xs font-semibold uppercase tracking-wider text-slate-300"
-              title={`Session ID: ${activeSimId || 'None'}`}
-            >
-              {simulationStatus}
-            </span>
-            {scenarioName && (
-              <span className="text-xs text-slate-400 truncate max-w-[120px]">
-                {scenarioName}
-              </span>
-            )}
-          </div>
-
-          <div
-            className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm ${badge.color}`}
-            title={`WebSocket: ${wsStatus}`}
+        {/* Engine Status & Session */}
+        <div className="flex flex-col items-end">
+          <span
+            className="text-xs font-bold uppercase tracking-wider text-slate-200"
+            title={`Session: ${activeSimId || 'None'}`}
           >
-            <span>{badge.label}</span>
-          </div>
+            {simulationStatus}
+          </span>
+          {scenarioName && (
+            <span className="text-xs text-slate-400 truncate max-w-[130px]">
+              {scenarioName}
+            </span>
+          )}
         </div>
+
+        {/* Live Network Pill */}
+        <div
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-sm ${badge.color}`}
+          title={`WebSocket Status: ${wsStatus}`}
+        >
+          <span>{badge.label}</span>
+        </div>
+
+        {/* Theme Toggle Borderless Pill */}
+        <button
+          onClick={toggleTheme}
+          className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-slate-800 text-xs font-bold text-slate-100 transition-all duration-200 shadow-sm hover:scale-105 active:scale-95 cursor-pointer ml-1"
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Theme`}
+          aria-label="Toggle light or dark theme"
+        >
+          <span>{theme === 'light' ? '🌙 Dark' : '☀️ Light'}</span>
+        </button>
       </div>
     </header>
   );

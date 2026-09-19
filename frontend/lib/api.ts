@@ -14,6 +14,17 @@ import {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly code?: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
 async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
   const response = await fetch(url, {
@@ -26,17 +37,19 @@ async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T>
 
   if (!response.ok) {
     let errorMsg = `HTTP Error ${response.status} ${response.statusText}`;
+    let errorCode: string | undefined;
     try {
       const errData = await response.json();
       if (errData.error?.message) {
         errorMsg = errData.error.message;
+        errorCode = errData.error.code;
       } else if (errData.detail) {
         errorMsg = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
       }
     } catch {
       // Ignore JSON parse errors for fallback errorMsg
     }
-    throw new Error(errorMsg);
+    throw new ApiError(errorMsg, response.status, errorCode);
   }
 
   return response.json() as Promise<T>;

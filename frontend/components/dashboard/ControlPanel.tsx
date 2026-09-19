@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ScenarioMetadataSchema } from '../../lib/types';
+import LatticeLoader from '../ui/LatticeLoader';
 
 interface ControlPanelProps {
   scenarios: ScenarioMetadataSchema[];
@@ -9,10 +10,13 @@ interface ControlPanelProps {
   onSelectScenario: (id: string) => void;
   activeSimId: string | null;
   simulationStatus: string;
+  simulationSpeed: number;
+  onChangeSpeed: (speed: number) => void;
   onCreateSimulation: () => void;
   onStartSimulation: () => void;
   onPauseSimulation: () => void;
   onStepSimulation: () => void;
+  onSkipSimulation: () => void;
   onStopSimulation: () => void;
   onTriggerOptimization: () => void;
   onOpenInjectEvent: () => void;
@@ -25,10 +29,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onSelectScenario,
   activeSimId,
   simulationStatus,
+  simulationSpeed,
+  onChangeSpeed,
   onCreateSimulation,
   onStartSimulation,
   onPauseSimulation,
   onStepSimulation,
+  onSkipSimulation,
   onStopSimulation,
   onTriggerOptimization,
   onOpenInjectEvent,
@@ -37,20 +44,20 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const isRunning = simulationStatus.toLowerCase() === 'running';
   const isPaused = simulationStatus.toLowerCase() === 'paused';
   const isCreated = simulationStatus.toLowerCase() === 'created';
+  const isFinished = ['completed', 'failed'].includes(simulationStatus.toLowerCase());
   const hasActiveSession = Boolean(activeSimId);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-md flex flex-wrap items-center justify-between gap-4">
+    <div className="ops-control-bar rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-4">
       {/* Scenario Selector & Session Initialization */}
-      <div className="flex items-center space-x-3">
-        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+      <div className="control-scenario flex items-center space-x-3">
+        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
           Scenario:
         </label>
         <select
           value={selectedScenarioId}
           onChange={(e) => onSelectScenario(e.target.value)}
-          disabled={hasActiveSession && isRunning}
-          className="bg-slate-950 text-slate-100 border border-slate-700 text-xs rounded-lg px-3 py-2 font-medium focus:outline-none focus:border-cyan-500 disabled:opacity-50"
+          className="bg-slate-900/90 text-slate-100 text-xs rounded-xl px-3.5 py-2 font-semibold shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer"
         >
           {scenarios.map((sc) => (
             <option key={sc.scenario_id} value={sc.scenario_id}>
@@ -62,19 +69,43 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         {!hasActiveSession && (
           <button
             onClick={onCreateSimulation}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shadow-md flex items-center space-x-1.5"
+            className="btn-ctl btn-ctl-optimize"
           >
             <span>Initialize Session</span>
           </button>
         )}
+        {hasActiveSession && isFinished && (
+          <button
+            onClick={onCreateSimulation}
+            className="btn-ctl btn-ctl-optimize"
+          >
+            <span>New Session</span>
+          </button>
+        )}
       </div>
 
-      {/* Simulation Controls */}
-      <div className="flex items-center space-x-2">
+      {/* Simulation Transport Controls */}
+      <div className="control-transport flex items-center space-x-2">
+        {hasActiveSession && !isFinished && (
+          <div className="speed-control" title="Simulation speed multiplier">
+            <span className="speed-control__label">Speed</span>
+            {[1, 2, 5].map((speed) => (
+              <button
+                key={speed}
+                type="button"
+                onClick={() => onChangeSpeed(speed)}
+                className={simulationSpeed === speed ? 'speed-control__button is-active' : 'speed-control__button'}
+              >
+                {speed}×
+              </button>
+            ))}
+          </div>
+        )}
+
         {hasActiveSession && (isCreated || isPaused) && (
           <button
             onClick={onStartSimulation}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center space-x-1"
+            className="btn-ctl btn-ctl-start"
           >
             <span>▶ Start</span>
           </button>
@@ -83,48 +114,61 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         {hasActiveSession && isRunning && (
           <button
             onClick={onPauseSimulation}
-            className="bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center space-x-1"
+            className="btn-ctl btn-ctl-pause"
           >
             <span>⏸ Pause</span>
           </button>
         )}
 
-        {hasActiveSession && (
+        {hasActiveSession && !isFinished && (
           <button
             onClick={onStepSimulation}
-            disabled={isRunning}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition-colors disabled:opacity-40"
+            className="btn-ctl btn-ctl-step"
             title="Advance simulation by 1s"
           >
             <span>⏭ Step 1s</span>
           </button>
         )}
 
-        {hasActiveSession && (
+        {hasActiveSession && !isFinished && (
+          <button
+            onClick={onSkipSimulation}
+            className="btn-ctl btn-ctl-skip"
+            title="Advance simulation by 10 seconds"
+          >
+            <span>⏩ Skip +10s</span>
+          </button>
+        )}
+
+        {hasActiveSession && !isFinished && (
           <button
             onClick={onStopSimulation}
-            className="bg-rose-700 hover:bg-rose-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors flex items-center space-x-1"
+            className="btn-ctl btn-ctl-stop"
           >
             <span>⏹ Stop</span>
           </button>
         )}
       </div>
 
-      {/* Optimization & Event Actions */}
-      <div className="flex items-center space-x-2">
+      {/* Optimization & Event Action Buttons */}
+      <div className="control-actions flex items-center space-x-2.5">
         <button
           onClick={onTriggerOptimization}
-          disabled={!hasActiveSession || isOptimizing}
-          className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-md transition-all flex items-center space-x-2 disabled:opacity-40"
+          disabled={!hasActiveSession || isFinished || isOptimizing}
+          className="btn-ctl btn-ctl-optimize"
         >
           {isOptimizing ? (
-            <>
-              <svg className="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              <span>Optimizing QAOA...</span>
-            </>
+            <LatticeLoader
+              label="QAOA Solving..."
+              pattern="spiral"
+              grid={3}
+              glow
+              color="#ffffff"
+              cellSize={3.5}
+              gap={1.5}
+              fontSize={11}
+              showTimer
+            />
           ) : (
             <>
               <span>⚛ Optimize Now</span>
@@ -134,8 +178,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <button
           onClick={onOpenInjectEvent}
-          disabled={!hasActiveSession}
-          className="bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-600/40 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors disabled:opacity-40 flex items-center space-x-1.5"
+          disabled={!hasActiveSession || isFinished}
+          className="btn-ctl btn-ctl-event"
         >
           <span>⚡ Inject Event</span>
         </button>

@@ -79,6 +79,15 @@ export interface EdgeStateSchema {
   is_closed: boolean;
 }
 
+export interface ActiveEventSnapshot {
+  event_id: string;
+  event_type: string;
+  timestamp: number;
+  duration: number;
+  status: string;
+  target: string;
+}
+
 export interface SimulationSessionResponse {
   simulation_id: string;
   status: string;
@@ -94,9 +103,10 @@ export interface SimulationStateSnapshot {
   vehicles: VehicleStateSchema[];
   signals: SignalStateSchema[];
   edges: EdgeStateSchema[];
-  active_events: Record<string, unknown>[];
-  emergency_corridors: Record<string, unknown>[];
-  metrics: Record<string, unknown>;
+  active_events: ActiveEventSnapshot[];
+  emergency_corridors: EmergencyCorridorResponse[];
+  metrics: SimulationMetricsResponse;
+  latest_optimization: OptimizationResponse | null;
 }
 
 export interface OptimizationRequest {

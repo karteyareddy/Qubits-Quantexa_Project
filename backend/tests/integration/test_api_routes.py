@@ -32,6 +32,8 @@ def test_scenarios_endpoint() -> None:
     assert "low-traffic" in s_ids
     assert "congested-traffic" in s_ids
     assert "emergency-vehicle" in s_ids
+    emergency = next(s for s in scenarios if s["scenario_id"] == "emergency-vehicle")
+    assert emergency["duration_seconds"] == 300.0
 
 
 def test_simulation_lifecycle_rest() -> None:
@@ -52,6 +54,9 @@ def test_simulation_lifecycle_rest() -> None:
     assert state["simulation_id"] == sim_id
     assert len(state["vehicles"]) == 3
     assert len(state["signals"]) == 6
+    assert state["metrics"]["simulation_id"] == sim_id
+    assert state["metrics"]["total_vehicles"] == 3
+    assert state["latest_optimization"] is None
 
     # 3. Start
     start_res = client.post(f"/api/v1/simulations/{sim_id}/start")
@@ -63,6 +68,9 @@ def test_simulation_lifecycle_rest() -> None:
     assert step_res.status_code == 200
     stepped_state = step_res.json()
     assert stepped_state["simulation_time_seconds"] == 5.0
+    assert stepped_state["metrics"]["simulation_time_seconds"] == 5.0
+    assert stepped_state["latest_optimization"] is not None
+    assert "solver_name" in stepped_state["latest_optimization"]
 
     # 5. Inject Event
     event_payload = {
@@ -124,6 +132,13 @@ def test_emergency_corridor_api() -> None:
     # Step to t=10 where emergency vehicle arrives
     client.post(f"/api/v1/simulations/{sim_id}/step", json={"step_seconds": 10.0})
 
+    state_res = client.get(f"/api/v1/simulations/{sim_id}")
+    state_corridors = state_res.json()["emergency_corridors"]
+    assert len(state_corridors) == 1
+    assert state_corridors[0]["vehicle_id"] == "emergency-001"
+    assert state_corridors[0]["status"] == "active"
+    assert len(state_corridors[0]["green_windows"]) >= 1
+
     # GET emergency corridors
     em_res = client.get(f"/api/v1/simulations/{sim_id}/emergency")
     assert em_res.status_code == 200
@@ -136,3 +151,43 @@ def test_emergency_corridor_api() -> None:
     corridor_data = act_res.json()
     assert corridor_data["vehicle_id"] == "emergency-001"
     assert corridor_data["status"] in ["planned", "active"]
+
+
+def test_injected_emergency_extends_short_session_horizon() -> None:
+    create_res = client.post(
+        "/api/v1/simulations",
+        json={
+            "scenario_id": "low-traffic",
+            "duration_seconds": 20.0,
+            "adaptive_enabled": False,
+        },
+    )
+    sim_id = create_res.json()["simulation_id"]
+    client.post(f"/api/v1/simulations/{sim_id}/start")
+
+    event_res = client.post(
+        f"/api/v1/simulations/{sim_id}/events",
+        json={
+            "type": "emergency_arrival",
+            "timestamp": 1.0,
+            "vehicle_id": "emergency-horizon-test",
+            "origin": "I1",
+            "destination": "I6",
+            "priority_weight": 20,
+        },
+    )
+    assert event_res.status_code == 201
+
+    step_res = client.post(
+        f"/api/v1/simulations/{sim_id}/step",
+        json={"step_seconds": 150.0},
+    )
+    assert step_res.status_code == 200
+    state = step_res.json()
+    emergency = next(
+        vehicle
+        for vehicle in state["vehicles"]
+        if vehicle["vehicle_id"] == "emergency-horizon-test"
+    )
+    assert emergency["has_arrived"] is True
+    assert state["emergency_corridors"][0]["status"] == "completed"

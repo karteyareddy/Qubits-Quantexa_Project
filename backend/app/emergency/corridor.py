@@ -29,6 +29,12 @@ class EmergencyCorridorPlanner:
         try:
             route = EmergencyRouteExtractor.extract_and_validate_route(vehicle, network)
             sequence = EmergencyRouteExtractor.extract_intersection_sequence(network, route)
+            if vehicle.current_edge_id is not None:
+                try:
+                    current_index = route.edge_ids.index(vehicle.current_edge_id)
+                    sequence = sequence[current_index:]
+                except ValueError:
+                    pass
 
             if not sequence:
                 raise EmergencyRouteError(

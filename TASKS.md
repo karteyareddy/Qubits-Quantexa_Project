@@ -407,3 +407,31 @@ Verified:
 - Unit tests (`backend/tests/unit/test_demo.py`) pass (2 tests passed).
 - Judge presentation scripts (`docs/DEMO_SCRIPT.md`) and factual Q&A defense guide (`docs/JUDGE_QA.md`) created.
 - Full quality gate (173 backend pytest tests, Ruff, Mypy, Next.js lint & build, git diff check) passed cleanly.
+
+## Post-Completion Fixes
+
+### Live dashboard integration
+
+Status: Complete (2026-09-20)
+
+Verified:
+- REST and WebSocket state snapshots now use the same flat metrics contract expected by the frontend.
+- REST-driven simulation steps broadcast fresh state to connected WebSocket clients.
+- Emergency corridor status, route intersections, and green windows stream in live state snapshots.
+- Emergency scenarios and injected emergency events extend the simulation horizon through vehicle arrival.
+- Automatic adaptive optimization results are included in snapshots for the optimizer panels.
+- Dashboard state updates share one typed path, report live-step failures, and prevent overlapping ticks.
+- Explicit `NEXT_PUBLIC_WS_URL` configuration is honored, with REST-derived WebSocket fallback.
+- Completed simulations expose a `New Session` action and scenario changes create a fresh running session.
+- Dynamic-event form controls use readable dark-theme input colors and valid directed edge IDs.
+- Live QAOA uses a 12-qubit receding horizon with bounded Aer shots/iterations and preflight limits.
+- Built-in demos run for 300 seconds, and the map explains EW/NS green movement with directional indicators.
+- Frontend session recovery replaces stale simulation IDs automatically after backend restarts.
+- Frontend lint and production build pass.
+- Accident events now reduce capacity and speed, expose a live travel-time multiplier, render directly on affected roads, and restore edge state after expiry.
+- Simulation controls now provide `1×`, `2×`, and `5×` live speeds plus explicit `+1s` and `+10s` advancement.
+- Dynamic-event edge selection covers every directed network edge, and failed submissions remain open with the API error visible.
+- Emergency corridor highlighting no longer rotates away from its intersections, and active incidents remain visible over corridor routes.
+- Dashboard cards, controls, map, header, modal, focus states, and scrolling use a polished operations-center visual system.
+- Emergency road-closure replanning now atomically updates both the corridor and live vehicle route, refreshes green-window ETAs from the vehicle's actual position, and prevents post-expiry intersection stalls.
+- Vehicle markers use smooth client-side interpolation between simulation snapshots.

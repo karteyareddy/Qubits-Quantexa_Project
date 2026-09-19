@@ -33,15 +33,23 @@ def test_accident_handler_apply_and_restore(sim: TrafficSimulation) -> None:
     )
 
     edge_map = {e.edge_id: e for e in sim.scenario.network.edges}
-    orig_cap = edge_map["I1->I2"].capacity
+    target_edge = edge_map["I1->I2"]
+    orig_cap = target_edge.capacity
+    orig_congestion = target_edge.congestion
+    orig_travel_time = target_edge.travel_time_seconds
 
     rec = apply_event(event, sim, active_effects)
     assert rec.status == EventStatus.ACTIVE
-    assert edge_map["I1->I2"].capacity == max(1.0, orig_cap * 0.25)
+    assert target_edge.capacity == max(1.0, orig_cap * 0.25)
+    assert target_edge.congestion > orig_congestion
+    assert target_edge.travel_time_seconds > orig_travel_time
+    assert rec.metadata["travel_time_multiplier"] > 1.0
     assert "acc1" in active_effects
 
     restore_event_effect("acc1", sim, active_effects)
-    assert edge_map["I1->I2"].capacity == orig_cap
+    assert target_edge.capacity == orig_cap
+    assert target_edge.congestion == orig_congestion
+    assert target_edge.travel_time_seconds == orig_travel_time
     assert "acc1" not in active_effects
 
 

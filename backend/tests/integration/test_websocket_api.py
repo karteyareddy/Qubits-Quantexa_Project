@@ -28,11 +28,16 @@ def test_websocket_connection_and_streaming() -> None:
         pong_msg = websocket.receive_json()
         assert pong_msg["type"] == "pong"
 
-        # Send step action
-        websocket.send_json({"action": "step", "step_seconds": 2.0})
+        # REST-driven steps are broadcast to live dashboard subscribers.
+        step_res = client.post(
+            f"/api/v1/simulations/{sim_id}/step",
+            json={"step_seconds": 2.0},
+        )
+        assert step_res.status_code == 200
         stepped_msg = websocket.receive_json()
         assert stepped_msg["type"] == "state"
         assert stepped_msg["timestamp"] == 2.0
+        assert stepped_msg["data"]["metrics"]["simulation_time_seconds"] == 2.0
 
 
 def test_websocket_nonexistent_simulation() -> None:

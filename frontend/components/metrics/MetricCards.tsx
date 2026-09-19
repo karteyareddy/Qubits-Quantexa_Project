@@ -9,95 +9,69 @@ interface MetricCardsProps {
 }
 
 export const MetricCards: React.FC<MetricCardsProps> = ({ metrics }) => {
+  const completion = Math.min(100, Math.max(0, (metrics?.completion_rate ?? 0) * 100));
+  const cards = [
+    {
+      label: 'Average Wait',
+      value: formatTime(metrics?.average_waiting_time_seconds ?? 0),
+      detail: 'Signal delay / vehicle',
+      icon: '◷',
+      tone: 'cyan',
+    },
+    {
+      label: 'Network Flow',
+      value: `${formatNumber(metrics?.throughput_vph ?? 0, 0)} v/h`,
+      detail: 'Completed vehicle rate',
+      icon: '⇥',
+      tone: 'green',
+    },
+    {
+      label: 'Fleet State',
+      value: `${metrics?.active_vehicles ?? 0} / ${metrics?.total_vehicles ?? 0}`,
+      detail: `${formatNumber(completion, 1)}% complete`,
+      icon: '⬡',
+      tone: 'indigo',
+      progress: completion,
+    },
+    {
+      label: 'Fuel Model',
+      value: `${formatNumber(metrics?.total_fuel_consumed_liters ?? 0, 2)} L`,
+      detail: 'Estimated consumption',
+      icon: '◈',
+      tone: 'amber',
+    },
+    {
+      label: 'CO₂ Footprint',
+      value: `${formatNumber(metrics?.total_co2_emitted_kg ?? 0, 2)} kg`,
+      detail: 'Estimated emissions',
+      icon: '◌',
+      tone: 'rose',
+    },
+    {
+      label: 'Priority Link',
+      value: metrics?.emergency_corridor_active ? 'ACTIVE' : 'STANDBY',
+      detail: `Emergency wait ${formatTime(metrics?.emergency_waiting_time_seconds ?? 0)}`,
+      icon: '✚',
+      tone: metrics?.emergency_corridor_active ? 'amber' : 'slate',
+      active: metrics?.emergency_corridor_active,
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      {/* Average Waiting Time */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Avg Waiting Time
-        </span>
-        <div className="mt-1">
-          <span className="text-xl font-bold font-mono text-cyan-300">
-            {formatTime(metrics?.average_waiting_time_seconds || 0)}
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">Per vehicle delay</span>
-      </div>
-
-      {/* Throughput */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Throughput
-        </span>
-        <div className="mt-1">
-          <span className="text-xl font-bold font-mono text-emerald-400">
-            {formatNumber(metrics?.throughput_vph || 0, 0)} <span className="text-xs">v/h</span>
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">Vehicles per hour</span>
-      </div>
-
-      {/* Active Vehicles */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Active Vehicles
-        </span>
-        <div className="mt-1">
-          <span className="text-xl font-bold font-mono text-indigo-300">
-            {metrics?.active_vehicles || 0} / {metrics?.total_vehicles || 0}
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">
-          {formatNumber((metrics?.completion_rate || 0) * 100, 1)}% completion
-        </span>
-      </div>
-
-      {/* Fuel Consumption */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Fuel Consumed
-        </span>
-        <div className="mt-1">
-          <span className="text-xl font-bold font-mono text-amber-300">
-            {formatNumber(metrics?.total_fuel_consumed_liters || 0, 2)} <span className="text-xs">L</span>
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">Environmental metric</span>
-      </div>
-
-      {/* CO2 Emissions */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          CO₂ Emitted
-        </span>
-        <div className="mt-1">
-          <span className="text-xl font-bold font-mono text-rose-400">
-            {formatNumber(metrics?.total_co2_emitted_kg || 0, 2)} <span className="text-xs">kg</span>
-          </span>
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">Environmental impact</span>
-      </div>
-
-      {/* Emergency Corridor Status */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-md flex flex-col justify-between">
-        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Emergency Corridor
-        </span>
-        <div className="mt-1">
-          {metrics?.emergency_corridor_active ? (
-            <span className="inline-block bg-amber-950 text-amber-300 border border-amber-800 text-xs px-2.5 py-1 rounded font-bold animate-pulse">
-              ⚡ ACTIVE
-            </span>
-          ) : (
-            <span className="inline-block bg-slate-950 text-slate-400 border border-slate-800 text-xs px-2 py-0.5 rounded font-medium">
-              INACTIVE
-            </span>
+    <section className="metric-grid" aria-label="Live simulation metrics">
+      {cards.map((card) => (
+        <article key={card.label} className={`metric-card metric-card--${card.tone}`}>
+          <div className="metric-card__topline">
+            <span>{card.label}</span>
+            <i className={card.active ? 'metric-card__icon is-pulsing' : 'metric-card__icon'}>{card.icon}</i>
+          </div>
+          <strong>{card.value}</strong>
+          <small>{card.detail}</small>
+          {card.progress !== undefined && (
+            <div className="metric-progress"><span style={{ width: `${card.progress}%` }} /></div>
           )}
-        </div>
-        <span className="text-[10px] text-slate-500 mt-1">
-          Wait: {formatTime(metrics?.emergency_waiting_time_seconds || 0)}
-        </span>
-      </div>
-    </div>
+        </article>
+      ))}
+    </section>
   );
 };

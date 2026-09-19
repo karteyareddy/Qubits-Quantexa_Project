@@ -108,33 +108,41 @@ class HybridSignalOptimizer:
         qaoa_fail_msg = ""
         qaoa_time = 0.0
 
-        try:
-            qaoa_res = qaoa_solver.solve_qubo(
-                Q=Q,
-                constant_offset=constant_offset,
-                variable_names=variable_names,
-                variable_map=variable_map,
-                intersection_legal_phases=intersection_legal_phases,
-                horizon_intervals=horizon_intervals,
-            )
-            qaoa_time = time.perf_counter() - q_start
-
-            # 3. Extract top-K candidates from QAOA measurement distribution
-            candidates = extract_candidates(
-                measurement_counts=qaoa_res.measurement_counts,
-                Q=Q,
-                constant_offset=constant_offset,
-                variable_names=variable_names,
-                variable_map=variable_map,
-                intersection_legal_phases=intersection_legal_phases,
-                horizon_intervals=horizon_intervals,
-                top_k=cfg.candidate_count,
-            )
-            feasible_candidates = [c for c in candidates if c.is_feasible]
-        except Exception as exc:  # noqa: BLE001
+        if num_vars > cfg.qaoa_config.max_qubits:
             qaoa_failed = True
-            qaoa_fail_msg = str(exc)
+            qaoa_fail_msg = (
+                f"QUBO requires {num_vars} qubits, exceeding the configured Aer limit of "
+                f"{cfg.qaoa_config.max_qubits}"
+            )
             feasible_candidates = []
+        else:
+            try:
+                qaoa_res = qaoa_solver.solve_qubo(
+                    Q=Q,
+                    constant_offset=constant_offset,
+                    variable_names=variable_names,
+                    variable_map=variable_map,
+                    intersection_legal_phases=intersection_legal_phases,
+                    horizon_intervals=horizon_intervals,
+                )
+                qaoa_time = time.perf_counter() - q_start
+
+                # 3. Extract top-K candidates from QAOA measurement distribution
+                candidates = extract_candidates(
+                    measurement_counts=qaoa_res.measurement_counts,
+                    Q=Q,
+                    constant_offset=constant_offset,
+                    variable_names=variable_names,
+                    variable_map=variable_map,
+                    intersection_legal_phases=intersection_legal_phases,
+                    horizon_intervals=horizon_intervals,
+                    top_k=cfg.candidate_count,
+                )
+                feasible_candidates = [c for c in candidates if c.is_feasible]
+            except Exception as exc:  # noqa: BLE001
+                qaoa_failed = True
+                qaoa_fail_msg = str(exc)
+                feasible_candidates = []
 
         fallback_used = False
         fallback_reason = None

@@ -9,7 +9,8 @@ export class SimulationWebSocketClient {
   private isIntentionallyClosed = false;
 
   constructor(
-    private apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+    private apiBaseUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+    private configuredWsBaseUrl: string | undefined = process.env.NEXT_PUBLIC_WS_URL
   ) {}
 
   public connect(
@@ -32,13 +33,15 @@ export class SimulationWebSocketClient {
 
     this.statusCallback?.('CONNECTING');
 
-    // Convert http(s) URL to ws(s)
-    let wsBaseUrl = this.apiBaseUrl.replace(/^http/, 'ws');
+    // Prefer an explicit deployment WebSocket endpoint, otherwise derive it from REST.
+    let wsBaseUrl = this.configuredWsBaseUrl
+      ? this.configuredWsBaseUrl.replace(/\/$/, '')
+      : `${this.apiBaseUrl.replace(/\/$/, '').replace(/^http/, 'ws')}/api/v1/simulations`;
     if (!wsBaseUrl.startsWith('ws://') && !wsBaseUrl.startsWith('wss://')) {
       wsBaseUrl = `ws://${wsBaseUrl}`;
     }
 
-    const wsUrl = `${wsBaseUrl}/api/v1/simulations/${this.simulationId}/ws`;
+    const wsUrl = `${wsBaseUrl}/${this.simulationId}/ws`;
 
     try {
       this.ws = new WebSocket(wsUrl);

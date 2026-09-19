@@ -23,6 +23,7 @@ from app.events.models import (
 )
 
 events_router = APIRouter(prefix="/simulations", tags=["Events"])
+EMERGENCY_COMPLETION_ALLOWANCE_SECONDS = 180.0
 
 
 @events_router.post("/{simulation_id}/events", response_model=EventRecordResponse, status_code=201)
@@ -48,6 +49,7 @@ async def inject_event(
                 event_id=event_id,
                 starts_at_seconds=req.timestamp,
                 edge_id=req.edge_id,
+                severity=req.capacity_reduction,
                 capacity_factor=max(0.0, 1.0 - req.capacity_reduction),
                 duration_seconds=req.duration,
             )
@@ -66,6 +68,9 @@ async def inject_event(
                 origin=req.origin,
                 destination=req.destination,
                 priority=req.priority_weight,
+            )
+            session.extend_duration(
+                req.timestamp + EMERGENCY_COMPLETION_ALLOWANCE_SECONDS
             )
         else:
             raise TypeError("Unsupported event request payload")

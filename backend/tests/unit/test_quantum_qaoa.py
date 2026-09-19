@@ -11,6 +11,13 @@ from app.quantum.qaoa import (
 from app.signals.qubo.reference_solver import solve_signal_qubo_brute_force
 
 
+def test_live_qaoa_defaults_are_bounded_for_aer() -> None:
+    config = QAOAConfig()
+    assert config.max_qubits == 30
+    assert config.shots == 128
+    assert config.max_iterations == 5
+
+
 def test_qiskit_bitstring_endianness_conversion() -> None:
     vars_list = ["x_I1_P0_T0", "x_I1_P1_T0", "x_I2_P0_T0", "x_I2_P1_T0"]
 

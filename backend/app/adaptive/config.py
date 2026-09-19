@@ -13,7 +13,7 @@ class AdaptiveConfig(DomainModel):
         default=10.0, ge=1.0, le=300.0, description="Interval in seconds between optimization cycles"
     )
     optimization_horizon_intervals: int = Field(
-        default=2, ge=1, le=10, description="Number of future discrete decision intervals in QUBO horizon"
+        default=1, ge=1, le=10, description="Number of future discrete decision intervals in QUBO horizon"
     )
     optimization_interval_seconds: float = Field(
         default=10.0, ge=1.0, le=60.0, description="Duration of each decision interval in seconds"

@@ -4,6 +4,10 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from app.api.schemas.emergency import EmergencyCorridorResponse
+from app.api.schemas.metrics import SimulationMetricsResponse
+from app.api.schemas.optimization import OptimizationResponse
+
 
 class SimulationCreateRequest(BaseModel):
     """Configuration payload for initializing a new simulation session."""
@@ -92,5 +96,6 @@ class SimulationStateSnapshot(BaseModel):
     signals: list[SignalStateSchema]
     edges: list[EdgeStateSchema]
     active_events: list[dict[str, Any]]
-    emergency_corridors: list[dict[str, Any]]
-    metrics: dict[str, Any]
+    emergency_corridors: list[EmergencyCorridorResponse]
+    metrics: SimulationMetricsResponse
+    latest_optimization: OptimizationResponse | None = None

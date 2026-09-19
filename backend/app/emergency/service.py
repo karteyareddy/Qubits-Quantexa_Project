@@ -97,8 +97,14 @@ class EmergencyCorridorService:
             if veh_match:
                 # Check if route edges are still valid / open
                 edge_map = {e.edge_id: e for e in network.edges}
+                first_untraversed_index = (
+                    veh_match.current_route_index + 1
+                    if veh_match.current_edge_id is not None
+                    else 0
+                )
                 has_closed_edge = any(
-                    edge_id in edge_map and edge_map[edge_id].closed for edge_id in corridor.route.edge_ids
+                    edge_id in edge_map and edge_map[edge_id].closed
+                    for edge_id in corridor.route.edge_ids[first_untraversed_index:]
                 )
                 if has_closed_edge:
                     # Attempt dynamic reroute
@@ -116,6 +122,10 @@ class EmergencyCorridorService:
                                 "activated_at_seconds": corridor.activated_at_seconds,
                             }
                         )
+                        veh_match = simulation.update_vehicle_route(
+                            veh_match.vehicle_id,
+                            updated_corridor.route,
+                        )
                         self._corridors[cid] = updated_corridor
                         self._update_history(updated_corridor)
                     else:
@@ -128,6 +138,29 @@ class EmergencyCorridorService:
                         )
                         self._corridors[cid] = cancelled
                         self._update_history(cancelled)
+                        continue
+                elif (
+                    veh_match.current_edge_id is None
+                    or veh_match.current_route_index < len(corridor.route.edge_ids) - 1
+                ):
+                    # Recalculate ETAs from the ambulance's live position. This
+                    # keeps the next signal green even after unexpected delay.
+                    refreshed = EmergencyCorridorPlanner.plan_corridor(
+                        vehicle=veh_match,
+                        network=network,
+                        current_time=current_time,
+                        config=self.config,
+                        corridor_id=cid,
+                    )
+                    if refreshed.status == CorridorStatus.PLANNED:
+                        updated_corridor = refreshed.model_copy(
+                            update={
+                                "status": CorridorStatus.ACTIVE,
+                                "activated_at_seconds": corridor.activated_at_seconds,
+                            }
+                        )
+                        self._corridors[cid] = updated_corridor
+                        self._update_history(updated_corridor)
 
         # 3. Apply active signal preemption overrides
         active_list = [c for c in self._corridors.values() if c.status == CorridorStatus.ACTIVE]

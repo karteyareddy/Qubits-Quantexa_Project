@@ -1,17 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EventInjectPayload } from '../../lib/types';
+import { EventInjectPayload, NetworkSchema } from '../../lib/types';
 
 interface EventInjectionModalProps {
   simulationTime: number;
-  onInject: (payload: EventInjectPayload) => void;
+  network: NetworkSchema | null;
+  onInject: (payload: EventInjectPayload) => Promise<void | boolean>;
   onClose: () => void;
   isInjecting: boolean;
 }
 
 export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
   simulationTime,
+  network,
   onInject,
   onClose,
   isInjecting,
@@ -20,18 +22,19 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
     'congestion_spike'
   );
 
-  const [edgeId, setEdgeId] = useState<string>('I1-I2');
+  const [edgeId, setEdgeId] = useState<string>('I1->I2');
   const [multiplier, setMultiplier] = useState<number>(2.5);
-  const [duration, setDuration] = useState<number>(30.0);
+  const [duration, setDuration] = useState<string>('30');
   const [capacityReduction, setCapacityReduction] = useState<number>(0.5);
 
   const [vehicleId, setVehicleId] = useState<string>('emergency-event-001');
   const [origin, setOrigin] = useState<string>('I1');
   const [destination, setDestination] = useState<string>('I6');
-  const [priorityWeight, setPriorityWeight] = useState<number>(20);
+  const [priorityWeight, setPriorityWeight] = useState<string>('20');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const parsedDuration = Math.min(300, Math.max(5, Number(duration) || 30));
 
     let payload: EventInjectPayload;
 
@@ -41,7 +44,7 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
         timestamp: simulationTime + 1.0,
         edge_id: edgeId,
         multiplier,
-        duration,
+        duration: parsedDuration,
       };
     } else if (eventType === 'accident') {
       payload = {
@@ -49,14 +52,14 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
         timestamp: simulationTime + 1.0,
         edge_id: edgeId,
         capacity_reduction: capacityReduction,
-        duration,
+        duration: parsedDuration,
       };
     } else if (eventType === 'road_closure') {
       payload = {
         type: 'road_closure',
         timestamp: simulationTime + 1.0,
         target: edgeId,
-        duration,
+        duration: parsedDuration,
       };
     } else {
       payload = {
@@ -65,16 +68,16 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
         vehicle_id: vehicleId,
         origin,
         destination,
-        priority_weight: priorityWeight,
+        priority_weight: Math.min(100, Math.max(1, Number(priorityWeight) || 20)),
       };
     }
 
-    onInject(payload);
+    await onInject(payload);
   };
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
+      <div className="event-modal bg-slate-900 border border-slate-800 text-slate-100 rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-200 text-lg font-bold"
@@ -107,6 +110,13 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
             </select>
           </div>
 
+          <div className="event-help">
+            {eventType === 'accident' && 'Accidents reduce lane capacity and vehicle speed on the selected road.'}
+            {eventType === 'road_closure' && 'Road closures block the selected direction and force emergency corridor replanning.'}
+            {eventType === 'congestion_spike' && 'Congestion adds traffic to the selected direction and raises local queue pressure.'}
+            {eventType === 'emergency_arrival' && 'An emergency vehicle enters the network and requests coordinated green signals.'}
+          </div>
+
           {/* Conditional Input Fields */}
           {eventType !== 'emergency_arrival' ? (
             <>
@@ -115,15 +125,13 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                 <select
                   value={edgeId}
                   onChange={(e) => setEdgeId(e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                  className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                 >
-                  <option value="I1-I2">I1-I2</option>
-                  <option value="I2-I3">I2-I3</option>
-                  <option value="I4-I5">I4-I5</option>
-                  <option value="I5-I6">I5-I6</option>
-                  <option value="I1-I4">I1-I4</option>
-                  <option value="I2-I5">I2-I5</option>
-                  <option value="I3-I6">I3-I6</option>
+                  {(network?.edges ?? []).map((edge) => (
+                    <option key={edge.edge_id} value={edge.edge_id}>
+                      {edge.source_intersection} → {edge.target_intersection}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -168,8 +176,9 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                   min="5"
                   max="300"
                   value={duration}
-                  onChange={(e) => setDuration(parseFloat(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                  onChange={(e) => setDuration(e.target.value)}
+                  onBlur={() => setDuration(String(Math.min(300, Math.max(5, Number(duration) || 30))))}
+                  className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                 />
               </div>
             </>
@@ -181,7 +190,7 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                   type="text"
                   value={vehicleId}
                   onChange={(e) => setVehicleId(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                  className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -192,7 +201,7 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                     type="text"
                     value={origin}
                     onChange={(e) => setOrigin(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                    className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                   />
                 </div>
                 <div>
@@ -201,7 +210,7 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                     type="text"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                    className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
@@ -213,8 +222,9 @@ export const EventInjectionModal: React.FC<EventInjectionModalProps> = ({
                   min="1"
                   max="100"
                   value={priorityWeight}
-                  onChange={(e) => setPriorityWeight(parseInt(e.target.value))}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono"
+                  onChange={(e) => setPriorityWeight(e.target.value)}
+                  onBlur={() => setPriorityWeight(String(Math.min(100, Math.max(1, Number(priorityWeight) || 20))))}
+                  className="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-lg px-3 py-2 font-mono focus:outline-none focus:border-amber-500"
                 />
               </div>
             </>

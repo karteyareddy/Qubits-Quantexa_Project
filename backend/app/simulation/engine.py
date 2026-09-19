@@ -5,6 +5,7 @@ from math import floor
 
 from app.core.errors import SimulationError
 from app.domain.network import NetworkEdge
+from app.domain.route import Route
 from app.domain.vehicle import Vehicle, VehicleState
 from app.simulation.models import SimulationScenario, SimulationState
 from app.simulation.state import build_simulation_state
@@ -42,6 +43,41 @@ class TrafficSimulation:
             self._edge_by_id = {edge.edge_id: edge for edge in scenario.network.edges}
         self._state = self._initial_state()
         return self._state
+
+    def extend_duration(self, duration_seconds: float) -> None:
+        """Extend the simulation horizon without resetting current state."""
+        if duration_seconds > self._scenario.duration_seconds:
+            self._scenario = self._scenario.model_copy(
+                update={"duration_seconds": duration_seconds}
+            )
+
+    def update_vehicle_route(self, vehicle_id: str, route: Route) -> Vehicle:
+        """Replace a live or pending vehicle route without resetting its motion state."""
+        pending = list(self._state.pending_vehicles)
+        active = list(self._state.active_vehicles)
+        updated_vehicle: Vehicle | None = None
+
+        for vehicles in (pending, active):
+            for index, vehicle in enumerate(vehicles):
+                if vehicle.vehicle_id != vehicle_id:
+                    continue
+                updated_vehicle = vehicle.model_copy(update={"route": route})
+                vehicles[index] = updated_vehicle
+                break
+            if updated_vehicle is not None:
+                break
+
+        if updated_vehicle is None:
+            raise SimulationError(f"cannot reroute unknown active vehicle: {vehicle_id}")
+
+        self._state = build_simulation_state(
+            simulation_time_seconds=self._state.simulation_time_seconds,
+            network=self._scenario.network,
+            pending_vehicles=tuple(pending),
+            active_vehicles=tuple(active),
+            completed_vehicles=self._state.completed_vehicles,
+        )
+        return updated_vehicle
 
     def step(self, seconds: float | None = None) -> SimulationState:
         """Advance one timestep, or a smaller explicit positive interval."""
@@ -183,7 +219,8 @@ class TrafficSimulation:
         remaining_seconds = elapsed
         while remaining_seconds > _EPSILON:
             current_edge = self._edge(current.current_edge_id)
-            speed_mps = current_edge.free_flow_speed_kph / 3.6
+            travel_time_multiplier = 1.0 + current_edge.congestion / 20.0
+            speed_mps = current_edge.free_flow_speed_kph / 3.6 / travel_time_multiplier
             remaining_distance = current_edge.length_m * (1.0 - current.position_on_edge)
             seconds_to_end = remaining_distance / speed_mps
             if seconds_to_end > remaining_seconds + _EPSILON:
@@ -196,7 +233,7 @@ class TrafficSimulation:
                             1.0,
                             current.position_on_edge + travelled / current_edge.length_m,
                         ),
-                        "speed_kph": current_edge.free_flow_speed_kph,
+                        "speed_kph": current_edge.free_flow_speed_kph / travel_time_multiplier,
                         "distance_travelled_m": current.distance_travelled_m + travelled,
                         "total_travel_time_seconds": (
                             current.total_travel_time_seconds + remaining_seconds

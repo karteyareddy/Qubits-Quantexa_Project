@@ -13,6 +13,7 @@ from app.api.schemas.simulation import (
     SimulationStepRequest,
 )
 from app.api.session import SimulationSession, SimulationSessionManager
+from app.api.websocket import ws_manager
 
 simulations_router = APIRouter(prefix="/simulations", tags=["Simulations"])
 
@@ -88,7 +89,16 @@ async def step_simulation(
     session: SimulationSession = Depends(get_simulation_session),
 ) -> dict[str, Any]:
     """Advance simulation state by specified step duration."""
-    return await session.step(step_seconds=req.step_seconds)
+    snapshot = await session.step(step_seconds=req.step_seconds)
+    await ws_manager.broadcast(
+        session.simulation_id,
+        {
+            "type": "state",
+            "timestamp": snapshot["simulation_time_seconds"],
+            "data": snapshot,
+        },
+    )
+    return snapshot
 
 
 @simulations_router.post("/{simulation_id}/stop", response_model=SimulationSessionResponse)
