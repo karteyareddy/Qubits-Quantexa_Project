@@ -15,6 +15,7 @@
 | docs/TRAFFIC_SIMULATION.md | Implemented Stage 4 simulation design and limitations |
 | docs/TRAFFIC_SIGNALS.md | Implemented Stage 5 fixed-time signal design and safety rules |
 | docs/TRAFFIC_METRICS.md | Implemented Stage 6 metric definitions and environmental assumptions |
+| docs/OPTIMIZATION_MIGRATION.md | Implemented Stage 7 Priority-Aware MTF optimization design and limitations |
 | TESTING.md | Quality strategy |
 | DEPLOYMENT.md | Local/container/deployment |
 | SECURITY.md | Security requirements |

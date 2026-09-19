@@ -145,6 +145,8 @@ Verified:
 
 ## Stage 7 — Existing Priority-Aware MTF migration
 
+Status: Complete (2026-09-19)
+
 Refactor existing `priority_aware_mtf.py` logic into a clean optimization module.
 
 Preserve:
@@ -157,6 +159,15 @@ Preserve:
 
 Gate:
 old route optimization behavior has regression tests.
+
+Verified:
+- Decision variables x(v, r), QUBO terms, subproblem decomposition, and congestion feedback migrated to `backend/app/optimization/`.
+- Emergency vehicles are grouped into subproblem 0 for immediate priority.
+- Solvers support transparent fallback metadata (`requested_solver`, `actual_solver`, `fallback_used`, `fallback_reason`, `execution_class`).
+- Legacy regression tests confirm identical route selections and energy matching against `priority_aware_mtf.py`.
+- 81 unit, 9 integration, and 7 regression tests pass.
+- Ruff passes for `backend`.
+- Mypy passes for `backend/app`.
 
 ## Stage 8 — Signal QUBO
 

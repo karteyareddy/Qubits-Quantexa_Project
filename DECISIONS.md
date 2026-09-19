@@ -58,3 +58,12 @@ Provide a deterministic six-intersection network independent of live OSM data.
 - Estimate moving time as total travel time minus waiting time, clamped at zero to prevent double counting.
 - Default prototype rates are 2.4 L/hour moving, 0.08 L/hour idle, and 2.31 kg CO2/liter; all remain configurable and explicitly uncalibrated.
 - Keep metric calculation independent from controllers and optimization.
+
+## 2026-09-19 — Stage 7 Priority-Aware MTF migration
+
+- Migrate existing route-choice optimization into `backend/app/optimization/`.
+- Preserve binary decision variables `x(v, r)` and Priority-Aware Cost Hamiltonian terms ($H_{\text{one\_route}}$, $H_{\text{route\_cost}}$, $H_{\text{congestion}}$).
+- Group emergency vehicles in subproblem 0 during MTF decomposition to guarantee immediate prioritization.
+- Update edge congestion factor ($1.0 + c / 20.0$) and edge travel times dynamically after each subproblem solve.
+- Require explicit solver metadata (`solver_name`, `backend_name`, `execution_class`, `fallback_used`, `fallback_reason`) when falling back to classical samplers.
+- Clarify that Stage 7 optimizes route allocation choice, whereas future Stage 8+ optimizes adaptive signal timing.

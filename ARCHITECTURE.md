@@ -145,6 +145,23 @@ Simulation states -> MetricsService
 - Fuel and CO2 are labeled configurable prototype estimates, not calibrated measurements.
 - The result contract is controller-independent for fair future comparisons.
 
+## Stage 7 optimization boundary
+
+```text
+Stage 3 Network & Candidate Routes + Vehicles
+        -> PriorityMTFOptimizerService
+        -> variables (x(v,r)) + objective + qubo
+        -> solver abstraction (neal/sa/tabu/exact/qpu/dwave)
+        -> decoder -> feasibility verification
+        -> OptimizationResult + SolverMetadata
+```
+
+- Optimizes route-choice allocations for vehicles across candidate paths.
+- Does not modify signal timing or execute signal control (belongs to Stage 8+).
+- Subproblem decomposition groups emergency vehicles into subproblem 0.
+- Solution decoder produces explicit feasibility results and violations.
+- Solver abstraction captures fallback metadata and execution class (`CLASSICAL`, `QUANTUM`, `CLASSICAL_FALLBACK`).
+
 ## Live flow
 
 ```text
