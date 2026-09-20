@@ -17,6 +17,8 @@ interface TrafficMapProps {
   emergencyCorridors: EmergencyCorridorResponse[];
   selectedIntersectionId: string | null;
   onSelectIntersection: (id: string) => void;
+  highlightedRouteNodes?: string[] | null;
+  highlightedRouteType?: 'direct' | 'alternative' | null;
 }
 
 export const TrafficMap: React.FC<TrafficMapProps> = ({
@@ -25,6 +27,8 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
   emergencyCorridors,
   selectedIntersectionId,
   onSelectIntersection,
+  highlightedRouteNodes,
+  highlightedRouteType = 'alternative',
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [showHeadlights, setShowHeadlights] = useState<boolean>(true);
@@ -78,6 +82,15 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
   const movingVehicleCount = activeVehiclesList.length;
   const emergencyCount = activeVehiclesList.filter((v) => v.is_emergency).length;
 
+  // Weather state from live telemetry
+  const weatherMap = (stateSnapshot?.weather as Record<string, any>) || {};
+  const z1Cond = (weatherMap['zone-1']?.condition || 'clear').toLowerCase();
+  const z2Cond = (weatherMap['zone-2']?.condition || 'heavy_rain').toLowerCase();
+  const z3Cond = (weatherMap['zone-3']?.condition || 'fog').toLowerCase();
+  const z4Cond = (weatherMap['zone-4']?.condition || 'clear').toLowerCase();
+  const isZ2Flooded = z2Cond === 'flooding' || z2Cond === 'heavy_rain';
+  const isZ3Foggy = z3Cond === 'fog' || z3Cond === 'mist';
+
   return (
     <div className={`traffic-map-panel rounded-2xl shadow-xl relative overflow-hidden flex flex-col items-center transition-all duration-300 ${
       isLight ? 'bg-[#f4f3ef] text-slate-800' : 'bg-[#141b2d] text-slate-100'
@@ -106,6 +119,14 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
           <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Live City Grid • 6 Signal Nodes</span>
+          </div>
+
+          <div className={`hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-mono font-semibold ${
+            isZ2Flooded ? 'bg-sky-950/60 text-sky-300 border border-sky-800/40' : 'bg-slate-800/60 text-slate-300'
+          }`}>
+            <span>{isZ2Flooded ? '🌊' : '🌦️'} Zone 2: {z2Cond.replace('_', ' ').toUpperCase()}</span>
+            <span className="text-slate-500">|</span>
+            <span>{isZ3Foggy ? '🌫️' : '☀️'} Zone 3: {z3Cond.toUpperCase()}</span>
           </div>
         </div>
 
@@ -248,6 +269,25 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
             <marker id="gmap-arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto">
               <path d="M 0 1 L 10 5 L 0 9 z" fill={isLight ? '#2563eb' : '#38bdf8'} />
             </marker>
+
+            {/* Traveler Advisory Route Markers & Glow */}
+            <filter id="route-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <marker id="route-arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+            </marker>
+            <marker id="route-arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+            </marker>
+
+            {/* Flood Water Wave Gradient */}
+            <linearGradient id="flood-water-pattern" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.4" />
+            </linearGradient>
           </defs>
 
           {/* Background Canvas */}
@@ -278,6 +318,101 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
             <text x="620" y="415" fill={isLight ? '#64748b' : '#94a3b8'} fontSize="8" fontWeight="700" textAnchor="middle" letterSpacing="1">
               METROPOLITAN MARKET CORE
             </text>
+          </g>
+
+          {/* Weather Zone Boundaries & Atmospheric Simulation Layer */}
+          <g className="gmap-weather-zones pointer-events-none">
+            {/* Zone 1: Northwest Hub (I1) */}
+            <rect
+              x="18"
+              y="12"
+              width="250"
+              height="210"
+              rx="12"
+              fill={isLight ? '#f0fdf4' : '#052e16'}
+              fillOpacity={0.18}
+              stroke={isLight ? '#86efac' : '#166534'}
+              strokeWidth="1.2"
+              strokeDasharray="4,4"
+            />
+            <g transform="translate(28, 28)">
+              <rect x="0" y="0" width="130" height="18" rx="4" fill={isLight ? '#ffffff' : '#0f172a'} fillOpacity="0.88" />
+              <text x="6" y="12" fill={isLight ? '#166534' : '#4ade80'} fontSize="7.5" fontWeight="800">
+                ☀️ ZONE 1: CLEAR (100% Flow)
+              </text>
+            </g>
+
+            {/* Zone 4: South Civic & Medical Hub (I4) */}
+            <rect
+              x="18"
+              y="238"
+              width="250"
+              height="210"
+              rx="12"
+              fill={isLight ? '#f0fdf4' : '#052e16'}
+              fillOpacity={0.18}
+              stroke={isLight ? '#86efac' : '#166534'}
+              strokeWidth="1.2"
+              strokeDasharray="4,4"
+            />
+            <g transform="translate(28, 254)">
+              <rect x="0" y="0" width="130" height="18" rx="4" fill={isLight ? '#ffffff' : '#0f172a'} fillOpacity="0.88" />
+              <text x="6" y="12" fill={isLight ? '#166534' : '#4ade80'} fontSize="7.5" fontWeight="800">
+                ☀️ ZONE 4: CLEAR (100% Flow)
+              </text>
+            </g>
+
+            {/* Zone 2: Central Grand Corridor (I2, I5) - Flood / Heavy Rain Zone */}
+            <rect
+              x="280"
+              y="12"
+              width="295"
+              height="436"
+              rx="14"
+              fill={isZ2Flooded ? (isLight ? '#e0f2fe' : '#082f49') : (isLight ? '#f8fafc' : '#1e293b')}
+              fillOpacity={isZ2Flooded ? 0.32 : 0.12}
+              stroke={isZ2Flooded ? '#0284c7' : '#64748b'}
+              strokeWidth={isZ2Flooded ? '2' : '1.2'}
+              strokeDasharray={isZ2Flooded ? '6,3' : '4,4'}
+            />
+            <g transform="translate(292, 28)">
+              <rect
+                x="0"
+                y="0"
+                width={z2Cond === 'flooding' ? 185 : 175}
+                height="19"
+                rx="4"
+                fill={isLight ? '#ffffff' : '#0f172a'}
+                fillOpacity="0.92"
+              />
+              <text x="6" y="13" fill={isZ2Flooded ? '#0284c7' : '#64748b'} fontSize="7.5" fontWeight="800">
+                {z2Cond === 'flooding'
+                  ? '🌊 ZONE 2: FLOOD ACCUMULATION (40% Cap)'
+                  : isZ2Flooded
+                  ? '🌧️ ZONE 2: HEAVY RAIN (70% Cap)'
+                  : `☀️ ZONE 2: ${z2Cond.toUpperCase()}`}
+              </text>
+            </g>
+
+            {/* Zone 3: East Tech District (I3, I6) - Fog / Mist Zone */}
+            <rect
+              x="587"
+              y="12"
+              width="278"
+              height="436"
+              rx="14"
+              fill={isZ3Foggy ? (isLight ? '#e2e8f0' : '#334155') : (isLight ? '#f8fafc' : '#1e293b')}
+              fillOpacity={isZ3Foggy ? 0.42 : 0.12}
+              stroke={isZ3Foggy ? '#94a3b8' : '#64748b'}
+              strokeWidth="1.2"
+              strokeDasharray="4,4"
+            />
+            <g transform="translate(598, 28)">
+              <rect x="0" y="0" width="165" height="19" rx="4" fill={isLight ? '#ffffff' : '#0f172a'} fillOpacity="0.92" />
+              <text x="6" y="13" fill={isZ3Foggy ? '#94a3b8' : '#64748b'} fontSize="7.5" fontWeight="800">
+                {isZ3Foggy ? '🌫️ ZONE 3: FOG & MIST (Vis: <1km)' : `☀️ ZONE 3: ${z3Cond.toUpperCase()}`}
+              </text>
+            </g>
           </g>
 
           {/* Natural Water Body: Emerald Bay (Clean West Lake) */}
@@ -407,6 +542,20 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
                     strokeLinecap="round"
                   />
 
+                  {/* Flooded Road Water Accumulation & Current Overlay */}
+                  {isZ2Flooded && (edge.edge_id.includes('I2') || edge.edge_id.includes('I5')) && (
+                    <line
+                      x1={src.x}
+                      y1={src.y}
+                      x2={tgt.x}
+                      y2={tgt.y}
+                      stroke="url(#flood-water-pattern)"
+                      strokeWidth={18}
+                      strokeOpacity={0.75}
+                      strokeLinecap="round"
+                    />
+                  )}
+
                   {/* Yellow Center Divider */}
                   <line
                     x1={src.x}
@@ -438,6 +587,16 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
                       <circle r="11" fill="#ef4444" stroke="#ffffff" strokeWidth="2" className="animate-pulse" />
                       <text y="3.5" fill="#fff" fontSize="9" fontWeight="bold" textAnchor="middle">
                         !
+                      </text>
+                    </g>
+                  )}
+
+                  {/* Flooded Lane Hazard Badge for primary flooded link */}
+                  {isZ2Flooded && (edge.edge_id === 'E_I1_I2' || edge.edge_id === 'E_I2_I5') && (
+                    <g transform={`translate(${(x1 + x2) / 2}, ${(y1 + y2) / 2 - 14})`}>
+                      <rect x="-42" y="-7" width="84" height="14" rx="4" fill="#0284c7" stroke="#ffffff" strokeWidth="1" className="shadow-md" />
+                      <text x="0" y="3.5" fill="#ffffff" fontSize="7" fontWeight="900" textAnchor="middle">
+                        ⚠️ 1 LANE FLOODED
                       </text>
                     </g>
                   )}
@@ -534,6 +693,85 @@ export const TrafficMap: React.FC<TrafficMapProps> = ({
                   </g>
                 );
               })}
+            </g>
+          )}
+
+          {/* 5B. Highlighted Traveler Advisory Route Overlay */}
+          {highlightedRouteNodes && highlightedRouteNodes.length > 1 && (
+            <g className="gmap-highlighted-route pointer-events-none">
+              {highlightedRouteNodes.slice(0, highlightedRouteNodes.length - 1).map((nodeId, idx) => {
+                const nextNodeId = highlightedRouteNodes[idx + 1];
+                const src = CITY_INTERSECTIONS[nodeId];
+                const tgt = CITY_INTERSECTIONS[nextNodeId];
+                if (!src || !tgt) return null;
+                const isAlt = highlightedRouteType === 'alternative';
+                const routeColor = isAlt ? '#10b981' : '#f59e0b';
+                const arrowMarker = isAlt ? 'url(#route-arrow-green)' : 'url(#route-arrow-amber)';
+
+                return (
+                  <g key={`hl-route-seg-${nodeId}-${nextNodeId}`}>
+                    {/* Glowing Underlay */}
+                    <line
+                      x1={src.x}
+                      y1={src.y}
+                      x2={tgt.x}
+                      y2={tgt.y}
+                      stroke={routeColor}
+                      strokeWidth={18}
+                      strokeOpacity={0.4}
+                      strokeLinecap="round"
+                      filter="url(#route-glow)"
+                    />
+                    {/* Solid Ribbon */}
+                    <line
+                      x1={src.x}
+                      y1={src.y}
+                      x2={tgt.x}
+                      y2={tgt.y}
+                      stroke={routeColor}
+                      strokeWidth={8}
+                      strokeLinecap="round"
+                      strokeOpacity={0.9}
+                    />
+                    {/* Flowing Dashed Guide Beam */}
+                    <line
+                      x1={src.x}
+                      y1={src.y}
+                      x2={tgt.x}
+                      y2={tgt.y}
+                      stroke="#ffffff"
+                      strokeWidth={3}
+                      strokeDasharray="10,8"
+                      className="animate-corridor-flow"
+                      markerEnd={arrowMarker}
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Start & End Badges */}
+              {(() => {
+                const startNode = CITY_INTERSECTIONS[highlightedRouteNodes[0]];
+                const endNode = CITY_INTERSECTIONS[highlightedRouteNodes[highlightedRouteNodes.length - 1]];
+                if (!startNode || !endNode) return null;
+                const isAlt = highlightedRouteType === 'alternative';
+                return (
+                  <>
+                    <g transform={`translate(${startNode.x}, ${startNode.y - 34})`}>
+                      <rect x="-24" y="-9" width="48" height="18" rx="5" fill="#2563eb" className="shadow-lg" />
+                      <text x="0" y="3.5" fill="#ffffff" fontSize="8" fontWeight="900" textAnchor="middle">
+                        ORIGIN
+                      </text>
+                    </g>
+                    <g transform={`translate(${endNode.x}, ${endNode.y - 34})`}>
+                      <rect x="-32" y="-9" width="64" height="18" rx="5" fill={isAlt ? '#059669' : '#d97706'} className="shadow-lg" />
+                      <text x="0" y="3.5" fill="#ffffff" fontSize="8" fontWeight="900" textAnchor="middle">
+                        {isAlt ? 'RECOMMENDED' : 'DIRECT (FLOOD)'}
+                      </text>
+                    </g>
+                  </>
+                );
+              })()}
             </g>
           )}
 

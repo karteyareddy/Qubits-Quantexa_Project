@@ -14,6 +14,8 @@ import { ClassicalComparison } from '../../components/quantum/ClassicalCompariso
 import { EmergencyCorridorPanel } from '../../components/emergency/EmergencyCorridorPanel';
 import { EventTimeline } from '../../components/events/EventTimeline';
 import { EventInjectionModal } from '../../components/events/EventInjectionModal';
+import { WeatherControlPanel } from '../../components/weather/WeatherControlPanel';
+import { TravelerAdvisoryPanel } from '../../components/routes/TravelerAdvisoryPanel';
 
 export default function ConsolePage() {
   const {
@@ -50,6 +52,20 @@ export default function ConsolePage() {
   } = useDashboard();
 
   const [isInjectModalOpen, setIsInjectModalOpen] = useState<boolean>(false);
+  const [highlightedRouteNodes, setHighlightedRouteNodes] = useState<string[] | null>(null);
+  const [highlightedRouteType, setHighlightedRouteType] = useState<'direct' | 'alternative' | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const nav = window.performance && window.performance.getEntriesByType && (window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined);
+      const isNavReload = (nav && nav.type === 'reload') || (window.performance && (window.performance as any).navigation?.type === 1);
+      const isStorageReload = sessionStorage.getItem('site_reloading') === '1';
+      if (isNavReload || isStorageReload) {
+        sessionStorage.removeItem('site_reloading');
+        window.location.replace('/');
+      }
+    }
+  }, []);
 
   const activeScenario = scenarios.find((s) => s.scenario_id === selectedScenarioId);
 
@@ -111,6 +127,8 @@ export default function ConsolePage() {
                 emergencyCorridors={emergencyCorridors}
                 selectedIntersectionId={selectedIntersectionId}
                 onSelectIntersection={setSelectedIntersectionId}
+                highlightedRouteNodes={highlightedRouteNodes}
+                highlightedRouteType={highlightedRouteType}
               />
             </section>
 
@@ -118,6 +136,18 @@ export default function ConsolePage() {
               <QuantumPanel id="quantum" latestOptimization={latestOptimization} isOptimizing={isOptimizing} />
               <EmergencyCorridorPanel id="emergency" corridors={emergencyCorridors} onActivateCorridor={activateEmergencyCorridor} />
             </aside>
+          </div>
+
+          {/* Weather Intelligence & Dynamic Traveler Advisory Section */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 my-4">
+            <WeatherControlPanel id="weather" />
+            <TravelerAdvisoryPanel
+              id="advisory"
+              onSelectRouteForHighlight={(nodes, type) => {
+                setHighlightedRouteNodes(nodes);
+                setHighlightedRouteType(type);
+              }}
+            />
           </div>
 
           <MetricTrends history={metricHistory} />

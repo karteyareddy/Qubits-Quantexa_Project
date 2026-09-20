@@ -36,16 +36,26 @@ def compute_phase_traffic_cost(
         # Check if phase gives GREEN indication to this approach's axis
         is_green = _is_approach_green(approach.axis, phase)
 
+        from app.weather.engine import get_weather_engine
+
+        weather = get_weather_engine()
+        zone = weather.get_zone_for_road(edge_id)
+        w_risk = zone.impact.risk_factor if zone else 0.0
+        f_risk = (zone.water_level_cm / 10.0) if zone else 0.0
+
         if is_green:
-            # Served approach: throughput reward
+            # Served approach: throughput reward plus credit for draining queue from flooded zones
             servable = min(float(q_len), config.capacity_per_interval_veh)
             total_cost -= config.throughput_weight * servable
+            if f_risk > 0.0 or w_risk > 0.3:
+                total_cost -= 0.5 * (config.flood_risk_weight * f_risk + config.weather_risk_weight * w_risk)
         else:
-            # Unserved (RED) approach: queue, waiting, and emergency penalties
+            # Unserved (RED) approach: queue, waiting, emergency, and weather/flood risk penalties
             q_cost = config.queue_weight * q_len
             w_cost = config.waiting_weight * w_sec
             em_cost = config.emergency_weight * em_count
-            total_cost += q_cost + w_cost + em_cost
+            env_cost = config.weather_risk_weight * w_risk + config.flood_risk_weight * f_risk
+            total_cost += q_cost + w_cost + em_cost + env_cost
 
     return total_cost
 

@@ -80,8 +80,14 @@ export default function HeroPage() {
         </div>
 
         {/* Slogan & Mission Statement */}
-        <div className="qf-slogan-wrap">
-          <p className="qf-sub-slogan">
+        <div className="qf-slogan-wrap text-center max-w-3xl">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white mb-2">
+            Quantum-Enhanced <span style={{ color: '#00ff9d' }}>Urban Traffic Optimization</span>
+          </h2>
+          <p className="text-xs md:text-sm text-cyan-300 font-medium mb-3">
+            A Hybrid Quantum-Classical, Weather-Aware Adaptive Urban Traffic Management and Route Optimization System
+          </p>
+          <p className="qf-sub-slogan text-xs text-slate-400">
             <span>Smarter Roads</span>
             <span className="qf-slogan-dot">•</span>
             <span>Safer Cities</span>

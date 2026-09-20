@@ -658,7 +658,9 @@ html[data-theme="light"] .ambient-traffic-grid {
 html.dark .quantum-panel,
 html.dark .emergency-panel,
 html.dark .classical-panel,
-html.dark .timeline-panel {
+html.dark .timeline-panel,
+html.dark .weather-panel,
+html.dark .advisory-panel {
   padding: 1.25rem !important;
   border: 0 !important;
   border-radius: 1.25rem;
@@ -1294,7 +1296,9 @@ html[data-theme="light"] .emergency-panel,
 html[data-theme="light"] .classical-panel,
 html[data-theme="light"] .timeline-panel,
 html[data-theme="light"] .analytics-panel,
-html[data-theme="light"] .trend-card {
+html[data-theme="light"] .trend-card,
+html[data-theme="light"] .weather-panel,
+html[data-theme="light"] .advisory-panel {
   padding: 1.25rem !important;
   background: #ffffff !important;
   border: 0 !important;

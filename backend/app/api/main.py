@@ -13,18 +13,19 @@ from app.api.routes.network import network_router
 from app.api.routes.optimization import optimization_router
 from app.api.routes.scenarios import scenarios_router
 from app.api.routes.simulations import simulations_router
+from app.api.routes.weather import weather_router
 from app.api.routes.ws import ws_router
 
 
 def create_app() -> FastAPI:
     """Build and configure the main FastAPI application."""
     app = FastAPI(
-        title="Quantum-Enhanced Adaptive Urban Traffic Optimization API",
+        title="SNS Quantum Traffic Optimization API",
         description=(
-            "REST and WebSocket API providing live deterministic traffic simulation, "
-            "QAOA hybrid signal optimization, dynamic event injection, and emergency green corridors."
+            "Hybrid Quantum-Classical, Weather-Aware Adaptive Urban Traffic Management and Route Optimization System. "
+            "Simulates multi-zone weather impacts (flooding, fog, rain), QAOA signal optimization, and traveler route advisory."
         ),
-        version="1.0.0",
+        version="2.0.0",
         docs_url="/docs",
         openapi_url="/openapi.json",
     )
@@ -54,6 +55,7 @@ def create_app() -> FastAPI:
     api_v1_router.include_router(emergency_router)
     api_v1_router.include_router(metrics_router)
     api_v1_router.include_router(benchmark_router)
+    api_v1_router.include_router(weather_router)
     api_v1_router.include_router(ws_router)
 
     app.include_router(api_v1_router)

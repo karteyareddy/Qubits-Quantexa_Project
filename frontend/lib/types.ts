@@ -107,6 +107,7 @@ export interface SimulationStateSnapshot {
   emergency_corridors: EmergencyCorridorResponse[];
   metrics: SimulationMetricsResponse;
   latest_optimization: OptimizationResponse | null;
+  weather?: Record<string, any>;
 }
 
 export interface OptimizationRequest {

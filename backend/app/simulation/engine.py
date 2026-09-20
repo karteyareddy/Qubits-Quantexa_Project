@@ -219,10 +219,15 @@ class TrafficSimulation:
         remaining_seconds = elapsed
         while remaining_seconds > _EPSILON:
             current_edge = self._edge(current.current_edge_id)
+            from app.weather.engine import get_weather_engine
+
+            weather = get_weather_engine()
+            speed_mult = weather.get_edge_speed_multiplier(current_edge.edge_id)
+            effective_speed_kph = current_edge.free_flow_speed_kph * speed_mult
             travel_time_multiplier = 1.0 + current_edge.congestion / 20.0
-            speed_mps = current_edge.free_flow_speed_kph / 3.6 / travel_time_multiplier
+            speed_mps = effective_speed_kph / 3.6 / travel_time_multiplier
             remaining_distance = current_edge.length_m * (1.0 - current.position_on_edge)
-            seconds_to_end = remaining_distance / speed_mps
+            seconds_to_end = remaining_distance / max(0.1, speed_mps)
             if seconds_to_end > remaining_seconds + _EPSILON:
                 travelled = speed_mps * remaining_seconds
                 return current.model_copy(
@@ -233,7 +238,7 @@ class TrafficSimulation:
                             1.0,
                             current.position_on_edge + travelled / current_edge.length_m,
                         ),
-                        "speed_kph": current_edge.free_flow_speed_kph / travel_time_multiplier,
+                        "speed_kph": effective_speed_kph / travel_time_multiplier,
                         "distance_travelled_m": current.distance_travelled_m + travelled,
                         "total_travel_time_seconds": (
                             current.total_travel_time_seconds + remaining_seconds
@@ -326,10 +331,14 @@ class TrafficSimulation:
         state: SimulationState,
         at_time_seconds: float,
     ) -> bool:
-        capacity = max(1, floor(edge.capacity))
+        from app.weather.engine import get_weather_engine
+
+        weather = get_weather_engine()
+        capacity_mult = weather.get_edge_capacity_multiplier(edge.edge_id)
+        effective_capacity = max(1, floor(edge.capacity * capacity_mult))
         return (
             not edge.closed
-            and len(occupancy[edge.edge_id]) < capacity
+            and len(occupancy[edge.edge_id]) < effective_capacity
             and self._entry_policy.can_enter_next_edge(
                 vehicle,
                 edge,

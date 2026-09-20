@@ -14,6 +14,8 @@ const NAV_ITEMS = [
   { href: '/', icon: '❖', label: 'Hero Home' },
   { href: '#overview', icon: '⌁', label: 'Overview' },
   { href: '#network', icon: '◇', label: 'Network Map' },
+  { href: '#weather', icon: '🌦️', label: 'Weather Zones' },
+  { href: '#advisory', icon: '🧭', label: 'Traveler Advisory' },
   { href: '#quantum', icon: '⚛', label: 'Optimizer' },
   { href: '#emergency', icon: '✚', label: 'Emergency' },
   { href: '#events', icon: '⚡', label: 'Incidents' },

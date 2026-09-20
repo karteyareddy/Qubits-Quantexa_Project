@@ -16,4 +16,6 @@ class SignalQuboConfig(DomainModel):
     throughput_weight: float = Field(default=1.5, ge=0.0)
     emergency_weight: float = Field(default=20.0, ge=0.0)
     switch_weight: float = Field(default=5.0, ge=0.0)
+    weather_risk_weight: float = Field(default=8.0, ge=0.0)
+    flood_risk_weight: float = Field(default=12.0, ge=0.0)
     capacity_per_interval_veh: float = Field(default=5.0, ge=0.1)

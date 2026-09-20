@@ -31,10 +31,28 @@ logger = logging.getLogger(__name__)
 
 def get_scenario_by_id(scenario_id: str, seed: int = 42) -> SimulationScenario:
     """Retrieve canonical scenario by ID."""
+    from app.simulation.scenarios import (
+        congested_traffic_scenario,
+        emergency_flood_scenario,
+        emergency_vehicle_scenario,
+        flooding_scenario,
+        fog_scenario,
+        heavy_rain_scenario,
+        low_traffic_scenario,
+        mixed_weather_scenario,
+        normal_traffic_scenario,
+    )
+
     scenarios: dict[str, Any] = {
         "low-traffic": low_traffic_scenario(seed=seed),
         "congested-traffic": congested_traffic_scenario(seed=seed),
         "emergency-vehicle": emergency_vehicle_scenario(seed=seed),
+        "normal-traffic": normal_traffic_scenario(seed=seed),
+        "heavy-rain": heavy_rain_scenario(seed=seed),
+        "flooding": flooding_scenario(seed=seed),
+        "fog": fog_scenario(seed=seed),
+        "mixed-weather": mixed_weather_scenario(seed=seed),
+        "emergency-flood": emergency_flood_scenario(seed=seed),
     }
     if scenario_id not in scenarios:
         raise APIException(
@@ -258,15 +276,21 @@ class SimulationSession:
 
         closed_targets = {ev.target for ev in self.event_engine.active_records if ev.event_type.value == "road_closure"}
 
+        from app.weather.engine import get_weather_engine
+
+        weather = get_weather_engine()
+
         edges_data = [
             {
                 "edge_id": e.edge_id,
                 "vehicle_ids": list(sim_state.edge_occupancy.get(e.edge_id, ())),
                 "vehicle_count": len(sim_state.edge_occupancy.get(e.edge_id, ())),
                 "capacity": e.capacity,
-                "effective_capacity": e.capacity,
-                "travel_time_multiplier": 1.0 + e.congestion / 20.0,
+                "effective_capacity": max(1, int(e.capacity * weather.get_edge_capacity_multiplier(e.edge_id))),
+                "travel_time_multiplier": (1.0 + e.congestion / 20.0) / max(0.2, weather.get_edge_speed_multiplier(e.edge_id)),
                 "is_closed": e.edge_id in closed_targets or e.capacity == 0.0,
+                "is_flooded": weather.is_lane_blocked_by_flood(e.edge_id),
+                "weather_zone": weather.get_zone_for_road(e.edge_id).name if weather.get_zone_for_road(e.edge_id) else None,
             }
             for e in self.scenario.network.edges
         ]
@@ -305,6 +329,7 @@ class SimulationSession:
             "vehicles": vehicles_data,
             "signals": signals_data,
             "edges": edges_data,
+            "weather": weather.snapshot_summary(),
             "active_events": active_events_data,
             "emergency_corridors": active_corridors_data,
             "metrics": self.get_metrics_snapshot(),

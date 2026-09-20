@@ -1,325 +1,432 @@
 <p align="center">
-  <img src="frontend/public/q-trafficx-logo.png" alt="Q-TrafficX Logo" width="300" />
+  <img src="frontend/public/q-trafficx-logo.png" alt="SNS Quantum Traffic Optimization Logo" width="280" />
 </p>
 
-<h1 align="center">Q-TrafficX</h1>
-<h3 align="center">Quantum-Enhanced Adaptive Urban Traffic Optimization & Emergency Routing</h3>
+<h1 align="center">SNS Quantum Traffic Optimization</h1>
+<h3 align="center">A Hybrid Quantum-Classical, Weather-Aware Adaptive Urban Traffic Management and Route Optimization System</h3>
 <p align="center">
-  <em>Smarter Roads • Safer Cities • Greener Tomorrow</em>
+  <em>Adaptive Signals • Weather Intelligence • Flood & Fog Awareness • Quantum QUBO/QAOA Optimization • Traveler Guidance</em>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Next.js-14+-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-18%2F19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Qiskit-1.0+-6929C4?style=for-the-badge&logo=qiskit&logoColor=white" alt="Qiskit" />
   <img src="https://img.shields.io/badge/Qiskit%20Aer-Simulation-blueviolet?style=for-the-badge" alt="Qiskit Aer" />
-  <img src="https://img.shields.io/badge/Status-Validated-success?style=for-the-badge" alt="Status" />
+  <img src="https://img.shields.io/badge/Tests-181%20Passed-success?style=for-the-badge" alt="Tests" />
 </p>
 
 ---
 
 ## 📑 Table of Contents
-- [1. What is Q-TrafficX?](#1-what-is-q-trafficx)
-- [2. Why Q-TrafficX? (The Problem Statement)](#2-why-q-trafficx-the-problem-statement)
-- [3. The Solution & Core Value Proposition](#3-the-solution--core-value-proposition)
-- [4. Technical Approach & Mathematical Foundations](#4-technical-approach--mathematical-foundations)
-  - [4.1 Global Traffic Cost Objective](#41-global-traffic-cost-objective)
-  - [4.2 QUBO Formulation](#42-qubo-formulation)
-  - [4.3 Ising Spin Hamiltonian Transformation](#43-ising-spin-hamiltonian-transformation)
-  - [4.4 QAOA Circuit Ansatz & Optimization](#44-qaoa-circuit-ansatz--optimization)
-  - [4.5 Microscopic Kinematic Traffic Simulation](#45-microscopic-kinematic-traffic-simulation)
-  - [4.6 Dynamic Emergency Green Corridors](#46-dynamic-emergency-green-corridors)
-  - [4.7 Dynamic Incident & Event Management](#47-dynamic-incident--event-management)
-- [5. System Architecture & Tech Stack](#5-system-architecture--tech-stack)
-- [6. Requirements & Verification Matrix](#6-requirements--verification-matrix)
-- [7. Project Directory Structure](#7-project-directory-structure)
-- [8. Installation & Setup Guide](#8-installation--setup-guide)
-  - [8.1 Prerequisites](#81-prerequisites)
-  - [8.2 Step-by-Step Installation](#82-step-by-step-installation)
-  - [8.3 Launching the Application](#83-launching-the-application)
-  - [8.4 Environment Configuration](#84-environment-configuration)
-- [9. Operator Guide & Interactive Demonstration](#9-operator-guide--interactive-demonstration)
-- [10. Testing, Linting & Quality Verification](#10-testing-linting--quality-verification)
-- [11. Scientific Honesty & Quantum Modeling Disclosures](#11-scientific-honesty--quantum-modeling-disclosures)
-- [12. Acknowledgments](#12-acknowledgments)
+1. [Project Vision & Overview](#1-project-vision--overview)
+2. [Core Problem & The Need for Adaptive Traffic Management](#2-core-problem--the-need-for-adaptive-traffic-management)
+3. [System Architecture & Data Flow](#3-system-architecture--data-flow)
+4. [Intersection Network (4–8 Connected Intersections)](#4-intersection-network-48-connected-intersections)
+5. [Microscopic Traffic Simulation Engine](#5-microscopic-traffic-simulation-engine)
+6. [Weather Engine & Multi-Zone Climate Model](#6-weather-engine--multi-zone-climate-model)
+7. [Weather Impact Engine & Road Degradation Dynamics](#7-weather-impact-engine--road-degradation-dynamics)
+8. [Flood / Water-Flow & Fog / Mist Disruption Mechanisms](#8-flood--water-flow--fog--mist-disruption-mechanisms)
+9. [Mathematical Formulation: Weather-Aware QUBO & Ising Mapping](#9-mathematical-formulation-weather-aware-qubo--ising-mapping)
+10. [Quantum Optimization: QAOA on Qiskit Aer](#10-quantum-optimization-qaoa-on-qiskit-aer)
+11. [Classical Baseline Solvers & Comparative Benchmarks](#11-classical-baseline-solvers--comparative-benchmarks)
+12. [Traveler Route Optimization & Weather Advisory Guidance](#12-traveler-route-optimization--weather-advisory-guidance)
+13. [Emergency Vehicle Priority & Green Wave Corridors](#13-emergency-vehicle-priority--green-wave-corridors)
+14. [Adaptive Rolling Re-Optimization Loop](#14-adaptive-rolling-re-optimization-loop)
+15. [Master Demonstration Scenarios (1 to 6)](#15-master-demonstration-scenarios-1-to-6)
+16. [Interactive Digital Twin & 2D/3D Network Visualizer](#16-interactive-digital-twin--2d3d-network-visualizer)
+17. [REST API Endpoints & WebSocket Telemetry](#17-rest-api-endpoints--websocket-telemetry)
+18. [Project Structure](#18-project-structure)
+19. [Installation & Execution Guide](#19-installation--execution-guide)
+20. [Testing & Quality Verification](#20-testing--quality-verification)
+21. [Scientific Honesty & Quantum Modeling Disclosures](#21-scientific-honesty--quantum-modeling-disclosures)
 
 ---
 
-## 1. What is Q-TrafficX?
+## 1. Project Vision & Overview
 
-**Q-TrafficX** is a next-generation, quantum-enhanced urban traffic orchestration and emergency priority routing platform. It bridges continuous microscopic vehicular simulation with quantum combinatorial optimization to eliminate urban traffic bottlenecks, drastically cut idling emissions, and guarantee non-preempted green waves for emergency response vehicles.
+**SNS Quantum Traffic Optimization** is a comprehensive, production-grade prototype platform that simulates an interconnected urban arterial network and dynamically optimizes traffic signal timings and traveler routes in response to:
 
-Designed with a modular architecture, **Q-TrafficX** couples a high-performance **FastAPI** backend with a modern **Next.js** operations console, giving municipal traffic authorities, emergency dispatchers, and urban engineers real-time observability and adaptive closed-loop control over interconnected arterial road networks.
+* Real-time traffic density, queue lengths, and arterial saturation
+* Road capacity variations and dynamic lane availability
+* Multi-zone weather conditions (clear, heavy rain, flooding/water flow, fog/mist)
+* Water accumulation, flow directions, and lane blockages
+* Accidents, lane closures, and sudden congestion spikes
+* Priority dispatch for emergency response vehicles (ambulances, fire engines, police)
+* Divergent alternative route availability for municipal travelers
 
----
-
-## 2. Why Q-TrafficX? (The Problem Statement)
-
-Urban road networks worldwide are plagued by outdated, rigid traffic control paradigms:
-
-1. **Exponential Combinatorial Explosion ($O(2^N)$)**:
-   Coordinating multi-intersection signal splits and offsets across an interconnected arterial grid is an NP-hard combinatorial problem. As intersection counts and phase permutations grow, classical brute-force algorithms scale exponentially, rendering global real-time synchronization computationally intractable.
-2. **Rigid Fixed-Time & Actuated Limits**:
-   Conventional traffic lights run on pre-programmed time-of-day tables or isolated loop detectors. They fail during unexpected traffic surges, dynamic accidents, or adverse weather conditions, leading to upstream queue spillbacks and gridlock.
-3. **Emergency Service Delays & Fatalities**:
-   Ambulances, fire services, and police units lose critical response minutes trapped in general queue queues or caught at red lights. Traditional siren-based optical or radio preemption is localized to a single junction and lacks network-wide route lookahead.
-4. **Severe Environmental and Economic Costs**:
-   Stop-and-go driving and intersection idling account for millions of tons of excess $\text{CO}_2$ emissions and wasted fuel each year, degrading urban air quality and contributing directly to climate change.
+The system proves that changing environmental and meteorological conditions dynamically shift traffic physics and demand patterns, necessitating real-time re-formulation of Quadratic Unconstrained Binary Optimization (QUBO) problem matrices solved via hybrid quantum-classical algorithms.
 
 ---
 
-## 3. The Solution & Core Value Proposition
+## 2. Core Problem & The Need for Adaptive Traffic Management
 
-**Q-TrafficX** transforms traffic signal control from static schedules into a live, dynamically responsive optimization surface:
+Conventional municipal traffic signals operate on pre-timed daily schedules or isolated actuated sensors. They fail to adapt when adverse weather degrades roadway capacity:
 
-* **Quantum-Accelerated Combinatorial Optimization**: Formulates coordinated signal timing into Quadratic Unconstrained Binary Optimization (QUBO) and Ising Hamiltonians, solved via the Quantum Approximate Optimization Algorithm (QAOA) on **Qiskit Aer** quantum circuit simulation.
-* **Continuous Microscopic Vehicle Modeling**: Models individual vehicle kinematics, car-following behaviors, queue build-up, and lane saturation capacities across connected arterial junctions.
-* **Dynamic Emergency Green Corridors**: Automatically reserves and propagates an uninterrupted green wave along an ambulance’s exact GPS path, ensuring zero signal delay while gracefully managing cross-traffic queue dissipation.
-* **Live Dynamic Incident Adaptation**: Automatically recalculates signal allocations when real-world disruptions (accidents, lane closures, weather slowdowns) occur.
-* **Real-Time Operational Console**: Delivers live canvas arterial rendering, interactive transport controls, incident injection modal, LED matrix pulse loaders (`LatticeLoader`), and comprehensive environmental telemetry.
+| Environmental State | Observed Phenomena | Systemic Impact |
+|---|---|---|
+| **Normal Condition (Zone 1 / 4)** | Clear skies, dry pavement, normal road friction, 100% capacity | Smooth progression; standard green splits are optimal. |
+| **Heavy Rain / Flood (Zone 2)** | Downpours, standing water, sheet water flow across pavement, 1+ unusable lanes | Road capacity drops to 40–70%, vehicle speeds drop by 25–60%, severe queue spillbacks develop. |
+| **Fog / Mist (Zone 3)** | Early morning/night mist, visibility $< 1.0\text{ km}$, increased safe following distance | Speeds drop by 50%, reaction times double, elevated disruption/risk parameter. |
 
----
-
-## 4. Technical Approach & Mathematical Foundations
-
-```mermaid
-flowchart LR
-    A["Microscopic Traffic State<br/>Queues • Speeds • Densities"] --> B["QUBO & Objective Builder<br/>Arterial Coupling Matrix"]
-    B --> C["Ising Spin Transformation<br/>Pauli-Z Mapping"]
-    C --> D["QAOA Quantum Simulator<br/>Qiskit Aer Circuit"]
-    D --> E["Candidate Bitstrings<br/>& Energy Sampling"]
-    E --> F["Classical Refinement<br/>& Feasibility Filter"]
-    F --> G["Adaptive Signal Execution<br/>Green Splits & Corridors"]
-```
-
-### 4.1 Global Traffic Cost Objective
-The multi-objective cost function minimizes cumulative waiting time, queue backlogs, arterial link density, and signal switching penalties while prioritizing emergency vehicles:
-
-$$\mathcal{C}_{\text{traffic}} = W_w \sum_{i} \text{Wait}_i + W_q \sum_{i} \text{Queue}_i + W_c \sum_{e} \text{Congestion}_e - W_e \cdot \text{EmergencyBonus} + W_t \cdot \text{TransitionPenalty}$$
-
-Where:
-* $W_w, W_q$: Weights penalizing observed vehicle delay and stopped queue length.
-* $W_c$: Congestion penalty on road links exceeding their saturation threshold $\rho > 0.75$.
-* $W_e$: High-priority bonus multiplier awarded to active emergency corridors.
-* $W_t$: Damping penalty preventing unnecessary rapid phase thrashing.
+**SNS Quantum Traffic Optimization** recognizes these environmental variations across micro-climates in real time, re-allocates green durations to clear backed-up approaches, and guides travelers away from flooded bottlenecks toward safe, dry detour corridors.
 
 ---
 
-### 4.2 QUBO Formulation
-Signal phase decisions are encoded into binary decision variables $x_{i, p} \in \{0, 1\}$, indicating whether phase $p$ is active at intersection $i$:
-
-$$\min_{x \in \{0, 1\}^N} E(x) = \sum_{i} Q_{ii} x_i + \sum_{i < j} Q_{ij} x_i x_j + c$$
-
-* **Linear Diagonal Terms ($Q_{ii}$)**: Quantify the traffic pressure and queue discharge deficit relieved by activating phase $i$.
-* **Quadratic Coupling Terms ($Q_{ij}$)**: Represent network coordination between adjacent intersections $i$ and $j$, heavily discounting concurrent green signals along shared arterial progression corridors (creating green waves).
-* **One-Hot Phase Constraint**: Enforces that each intersection operates exactly one legal active phase at any given instant via penalty multiplier $P$:
-
-$$P_{\text{one-hot}} = P \sum_{k} \left( \sum_{p \in \text{Phases}_k} x_{k, p} - 1 \right)^2$$
-
----
-
-### 4.3 Ising Spin Hamiltonian Transformation
-To execute on quantum architectures, binary variables $x_i \in \{0, 1\}$ are mapped to quantum spin operators $z_i \in \{-1, +1\}$ via the exact substitution:
-
-$$x_i = \frac{I - Z_i}{2}$$
-
-Substituting this into the QUBO yields the Ising Problem Hamiltonian $H_C$:
-
-$$H_C = \sum_{i=1}^N h_i Z_i + \sum_{i < j} J_{ij} Z_i Z_j + c_{\text{Ising}} I$$
-
-Where local magnetic field coefficients $h_i$ and 2-qubit spin couplings $J_{ij}$ are calculated analytically:
-
-$$h_i = -\frac{Q_{ii}}{2} - \sum_{j \neq i} \frac{Q_{ij}}{4}, \quad J_{ij} = \frac{Q_{ij}}{4}$$
-
----
-
-### 4.4 QAOA Circuit Ansatz & Optimization
-The Quantum Approximate Optimization Algorithm prepares a parameterized quantum state over $p$ alternating circuit layers:
-
-$$|\psi(\boldsymbol{\gamma}, \boldsymbol{\beta})\rangle = \prod_{l=1}^p \left( e^{-i \beta_l H_M} e^{-i \gamma_l H_C} \right) |+\rangle^{\otimes N}$$
-
-1. **Initial State**: Uniform superposition across all computational basis states $|+\rangle^{\otimes N} = H^{\otimes N} |0\rangle^{\otimes N}$.
-2. **Phase Separator $e^{-i \gamma_l H_C}$**: Encodes the problem cost through $R_Z(\theta)$ single-qubit rotations and $R_{ZZ}(\theta)$ two-qubit entangling gates.
-3. **Mixer Hamiltonian $H_M = \sum_{i=1}^N X_i$**: Transverse field driving quantum transitions between orthogonal configurations using $R_X(2\beta_l)$ gates.
-4. **Classical Parameter Loop**: The expectation value $\langle \psi(\boldsymbol{\gamma}, \boldsymbol{\beta}) | H_C | \psi(\boldsymbol{\gamma}, \boldsymbol{\beta}) \rangle$ is minimized using the classical **COBYLA** optimizer on **Qiskit Aer** (`AerSimulator`), sampling top candidate bitstrings that undergo fast 1-bit flip classical heuristic refinement.
-
----
-
-### 4.5 Microscopic Kinematic Traffic Simulation
-Vehicular movement follows discrete-time microscopic kinematics with car-following safety constraints:
-* **Position & Velocity Updates**: $v(t + \Delta t) = \min(v_{\text{target}}, v(t) + a_{\text{max}} \Delta t)$, clamped by distance to preceding vehicle.
-* **Lane Capacity & Queuing**: Continuous density monitoring $\rho_e = \frac{N_{\text{active}}}{C_{\text{capacity}}}$ across every arterial link.
-* **Environmental Models**: Moving fuel consumption ($2.4 \text{ L/hr}$) and idling fuel burn ($0.08 \text{ L/hr}$) converted to $\text{CO}_2$ emissions ($2.31 \text{ kg } \text{CO}_2\text{/L}$) via standard EPA vehicle emission factors.
-
----
-
-### 4.6 Dynamic Emergency Green Corridors
-When an emergency vehicle is dispatched:
-1. **Dynamic Path Calculation**: The optimal network route from origin to hospital/destination is computed.
-2. **Preemptive Signal Preemption**: Upcoming intersections along the corridor calculate the vehicle’s Estimated Time of Arrival (ETA) and dynamically extend or switch signals to green prior to arrival.
-3. **Safe Dissipation**: Cross-street queues accumulated during corridor activation are smoothly discharged using priority-compensated phase cycles post-passage.
-
----
-
-### 4.7 Dynamic Incident & Event Management
-The simulation includes an event engine capable of introducing realistic urban disruptions on the fly:
-* **Road Accidents**: Obstruction of active lanes, reducing throughput to zero or near-zero on affected segments.
-* **Lane Closures**: Scheduled or emergency lane restrictions halving link capacity.
-* **Weather Slowdowns**: Rainfall or fog reducing maximum vehicle cruising speed by 30–50%.
-* **Traffic Surges**: Sudden influx of vehicles testing network absorption resilience.
-
----
-
-## 5. System Architecture & Tech Stack
+## 3. System Architecture & Data Flow
 
 ```mermaid
 flowchart TB
-    subgraph Client["Frontend Client (Next.js 14 • Port 3000)"]
-        HeroPage["Landing / Hero Page (/)"]
-        ConsolePage["Operations Console (/console)"]
-        CanvasMap["2D Arterial Canvas Map"]
-        Controls["Transport & Speed Multipliers (1x, 2x, 5x)"]
-        Telemetry["Environmental & Performance Cards"]
-        Lattice["LED Matrix Pulse Loader (LatticeLoader)"]
-        EventModal["Incident Injection Modal"]
+    subgraph Data["1. Multi-Modal Inputs"]
+        Traffic["Traffic Sensors<br/>Queues • Speeds • Densities"]
+        Weather["Weather Sensors / API<br/>Rain • Water • Visibility"]
+        Roads["Road State<br/>Capacity • Blockages"]
+        Events["Emergency Events<br/>Ambulances • Accidents"]
     end
 
-    subgraph Server["Backend Service (FastAPI • Python 3.11 • Port 8000)"]
-        Router["REST API Endpoints (/api/v1)"]
-        WSManager["WebSocket Telemetry Streamer (/ws)"]
-        
-        subgraph CoreSim["Simulation Engine"]
-            Network["6-Node Arterial Graph"]
-            Kinematics["Microscopic Kinematics"]
-            Observer["Traffic State Observer"]
-        end
-
-        subgraph Optimizer["Optimization Engine"]
-            QUBO["Signal QUBO Generator"]
-            Ising["Ising Hamiltonian Converter"]
-            QAOA["Qiskit Aer Simulator"]
-            Refiner["Classical Bitstring Refiner"]
-        end
-
-        subgraph Preemption["Emergency Preemption Core"]
-            Tracker["Ambulance GPS & ETA Engine"]
-            Corridor["Green Wave Coordinator"]
-        end
+    subgraph Core["2. Simulation & Climate Engines"]
+        Sim["Traffic Simulation Engine<br/>Microscopic Kinematics"]
+        Impact["Weather Impact Engine<br/>Dynamic Capacity & Speed Factors"]
+        Advisory["Traveler Advisory Service<br/>Direct vs Safe Detour"]
     end
 
-    ConsolePage -->|"REST API Requests"| Router
-    Router -->|"JSON Responses"| ConsolePage
-    WSManager -->|"WebSocket Telemetry Stream"| ConsolePage
-    Router --> CoreSim
-    Router --> Optimizer
-    Router --> Preemption
-    CoreSim --> WSManager
+    subgraph MathOpt["3. Optimization Core"]
+        QUBO["Weather-Aware QUBO Formulation<br/>Waiting + Travel + Flood + Weather Risk"]
+        Ising["Ising Spin Hamiltonian Mapping"]
+        Solver{"Hybrid Solver Selector"}
+        QAOA["Quantum QAOA (Qiskit Aer)"]
+        Classical["Classical Baseline (Annealing / Greedy)"]
+        Eval["Solution Evaluator & Feasibility Validator"]
+    end
+
+    subgraph Output["4. Closed-Loop Execution & Digital Twin"]
+        Signals["Signal Controller<br/>Adaptive Green Splits"]
+        Corridor["Emergency Green Waves"]
+        Twin["2D/3D Arterial Visualizer<br/>Floods • Fog • Weather Zones • Routes"]
+        AdvisoryUI["Traveler Advisory Panel<br/>ETA • Flood Risk • Warnings"]
+    end
+
+    Data --> Core
+    Core --> MathOpt
+    QUBO --> Ising --> Solver
+    Solver --> QAOA & Classical
+    QAOA & Classical --> Eval
+    Eval --> Output
+    Output -->|"Rolling Adaptive Feedback"| Data
 ```
 
-### Core Technology Stack
-| Layer | Technologies |
-|---|---|
-| **Frontend Framework** | Next.js 14, React 18/19, TypeScript (Strict Mode) |
-| **Styling & Design** | Vanilla CSS Design System, Custom Glassmorphism, Dark & Light Themes |
-| **Visual Rendering** | HTML5 2D Canvas (60 FPS vehicle rendering, headlights, signal heads) |
-| **Backend API** | FastAPI, Uvicorn, Pydantic v2 (Strict Schema Validation) |
-| **Quantum Simulation** | Qiskit 1.0+, Qiskit Aer (`AerSimulator`) |
-| **Graph & Networks** | NetworkX (6-Node Metropolitan Arterial Topology) |
-| **Optimization Stack** | dimod (BQM), Neal (Simulated Annealing), SciPy (COBYLA) |
+---
+
+## 4. Intersection Network (4–8 Connected Intersections)
+
+The platform models a configurable metropolitan arterial grid featuring **6 interconnected signalized junctions** ($I_1$ through $I_6$) partitioned into **4 Weather Zones**:
+
+```text
+       [Zone 1: Clear]                     [Zone 2: Flood / Heavy Rain]              [Zone 3: Fog / Mist]
+   +-----------------------+              +-----------------------------+          +-----------------------+
+   | (I1) West Gateway     |====[RT 10]==>| (I2) Grand Central          |==[RT 10]=>| (I3) Financial Plaza  |
+   +-----------------------+              +-----------------------------+          +-----------------------+
+              ||                                         ||                                   ||
+       [1st Ave North]                            [Broadway Ave]                           [I-95]
+              ||                                         ||                                   ||
+   +-----------------------+              +-----------------------------+          +-----------------------+
+   | (I4) South Civic Hub  |====[RT 20]==>| (I5) Market Square          |==[RT 20]=>| (I6) Tech Innovation  |
+   +-----------------------+              +-----------------------------+          +-----------------------+
+       [Zone 4: Clear]                     [Zone 2: Flood / Heavy Rain]              [Zone 3: Fog / Mist]
+```
+
+Each intersection features:
+* **Intersection ID** & human municipal street name
+* Connected arterial approaches and opposing directional lanes
+* Dual-ring signal phases (`EW_GREEN` and `NS_GREEN`) with clearance intervals
+* Real-time vehicle counts, queue depths, and queue spillback warnings
+* Assigned Weather Zone with dynamic capacity and risk multipliers
 
 ---
 
-## 6. Requirements & Verification Matrix
+## 5. Microscopic Traffic Simulation Engine
 
-All 24 core capabilities are fully implemented, tested, and validated:
+Vehicular movement is computed through discrete-time microscopic kinematics:
 
-| # | Requirement | Implementation Module | Verified Status |
+$$\begin{aligned}
+v(t + \Delta t) &= \min\left(v_{\text{target}} \cdot \mu_{\text{speed}}, \; v(t) + a_{\text{accel}} \Delta t\right) \\
+x(t + \Delta t) &= x(t) + v(t + \Delta t) \Delta t
+\end{aligned}$$
+
+Key features:
+* **Car-Following & Deceleration**: Safe stopping distances before red signals and preceding vehicles.
+* **Lane Selection & Saturation**: Vehicles advance only when the downstream link has available capacity under weather-degraded limits.
+* **Vehicle Types**: Normal passenger vehicles and priority emergency responders (ambulances with activated siren beacons).
+* **Fuel & Emissions**: Idling fuel burn ($0.08\text{ L/hr}$) and moving consumption ($2.4\text{ L/hr}$) converted to $\text{CO}_2$ emissions ($2.31\text{ kg CO}_2\text{/L}$).
+
+---
+
+## 6. Weather Engine & Multi-Zone Climate Model
+
+The urban network is divided into 4 autonomous meteorological zones:
+
+| Zone ID | Name | Default Condition | Assigned Intersections | Assigned Arterials |
+|---|---|---|---|---|
+| `zone-1` | Northwest Transit Gateway | `CLEAR` | $I_1$ | `E_I1_I2`, `E_I1_I4` |
+| `zone-2` | Central Grand Corridor | `HEAVY_RAIN` / `FLOODING` | $I_2$, $I_5$ | `E_I1_I2`, `E_I2_I5`, `E_I2_I3`, `E_I4_I5`, `E_I5_I6` |
+| `zone-3` | East Innovation District | `FOG` / `MIST` | $I_3$, $I_6$ | `E_I2_I3`, `E_I3_I6`, `E_I5_I6` |
+| `zone-4` | South Health & Civic Plaza | `CLEAR` | $I_4$ | `E_I1_I4`, `E_I4_I5` |
+
+Conditions supported: `CLEAR`, `CLOUDY`, `LIGHT_RAIN`, `HEAVY_RAIN`, `FLOODING`, `FOG`, `MIST`, `STORM`.
+
+---
+
+## 7. Weather Impact Engine & Road Degradation Dynamics
+
+Weather conditions do not merely appear visually; they modulate microscopic roadway parameters:
+
+| Weather Condition | Capacity Factor ($\mu_{\text{cap}}$) | Speed Factor ($\mu_{\text{spd}}$) | Lane Availability | Visibility | Risk Factor |
+|---|---|---|---|---|---|
+| **Clear** | $1.00$ | $1.00$ | $100\%$ | $10.0\text{ km}$ | $0.00$ |
+| **Light Rain** | $0.85$ | $0.88$ | $100\%$ | $6.0\text{ km}$ | $0.20$ |
+| **Heavy Rain** | $0.70$ | $0.75$ | $100\%$ | $3.5\text{ km}$ | $0.50$ |
+| **Flooding** | $0.40$ | $0.40$ | $50\%$ (1 Lane Blocked) | $2.0\text{ km}$ | $0.90$ |
+| **Fog / Mist** | $0.65$ | $0.50$ | $100\%$ | $0.8\text{ km}$ | $0.70$ |
+| **Storm** | $0.35$ | $0.35$ | $50\%$ | $1.0\text{ km}$ | $0.95$ |
+
+*All parameters are fully configurable through the REST API and labeled as simulation parameters.*
+
+---
+
+## 8. Flood / Water-Flow & Fog / Mist Disruption Mechanisms
+
+### Flood / Water-Flow Mechanism
+$$\text{Heavy Rain} \;\longrightarrow\; \text{Water Accumulation} \;\longrightarrow\; \text{Cross-Road Water Flow} \;\longrightarrow\; \text{Lane Blockage} \;\longrightarrow\; \text{Capacity Dips to } 40\% \;\longrightarrow\; \text{Spillback Queue}$$
+
+* **Visual Representation**: Water ripple stripes over affected pavement, directional water-flow indicators, and `⚠️ 1 LANE BLOCKED (FLOOD)` warning badges.
+* **Physics Impact**: Vehicles in the blocked lane merge, speeds drop to $40\%$, and effective vehicle capacity is halved.
+
+### Fog / Mist Mechanism
+$$\text{Fog / Mist} \;\longrightarrow\; \text{Visibility Drops to } < 1\text{ km} \;\longrightarrow\; \text{Target Speed Damped by } 50\% \;\longrightarrow\; \text{Reaction Distance Increases} \;\longrightarrow\; \text{Elevated Risk Score}$$
+
+* **Visual Representation**: Translucent fog mist layer across Zone 3 and a visibility indicator.
+* **Physics Impact**: Car-following headway increases to model defensive driving under low visibility.
+
+---
+
+## 9. Mathematical Formulation: Weather-Aware QUBO & Ising Mapping
+
+### 9.1 Multi-Objective Function
+The global cost function balances waiting time, link throughput, congestion, emergency delay, and weather/flood risk exposure:
+
+$$\min \mathcal{J} = \alpha \sum_{i} \text{Wait}_i + \beta \sum_{e} \text{Travel}_e + \gamma \sum_{e} \text{Congestion}_e + \delta \sum_{e} \text{WeatherRisk}_e + \epsilon \sum_{e} \text{FloodRisk}_e - \zeta \cdot \text{EmergencyBonus}$$
+
+### 9.2 Binary Encoding
+Let binary variables $x_{i, p} \in \{0, 1\}$ indicate whether phase $p \in \{\text{EW}, \text{NS}\}$ is active at intersection $i$.
+
+The Quadratic Unconstrained Binary Optimization (QUBO) problem takes the standard matrix form:
+
+$$\min_{x \in \{0, 1\}^N} x^T Q x + c$$
+
+* **Linear Diagonal Coefficients ($Q_{ii}$)**: Quantify the queue relief minus the adverse weather risk of routing vehicles into degraded downstream links.
+* **Quadratic Coupling Coefficients ($Q_{ij}$)**: Incentivize green progression waves between adjacent signals along shared corridors.
+* **One-Hot Validity Constraint**: Guarantees exactly one active phase per junction via penalty multiplier $P$:
+
+$$P_{\text{one-hot}} = P \sum_{i} \left( \sum_{p} x_{i, p} - 1 \right)^2$$
+
+### 9.3 Ising Spin Hamiltonian Mapping
+To execute on quantum simulators, binary variables are transformed to Pauli-$Z$ spin operators via:
+
+$$x_i = \frac{I - Z_i}{2}$$
+
+Yielding the Ising Problem Hamiltonian $H_C$:
+
+$$H_C = \sum_{i} h_i Z_i + \sum_{i < j} J_{ij} Z_i Z_j + c_{\text{Ising}} I$$
+
+Where local fields $h_i$ and two-qubit couplings $J_{ij}$ are derived analytically:
+
+$$h_i = -\frac{Q_{ii}}{2} - \sum_{j \neq i} \frac{Q_{ij}}{4}, \qquad J_{ij} = \frac{Q_{ij}}{4}$$
+
+---
+
+## 10. Quantum Optimization: QAOA on Qiskit Aer
+
+The Quantum Approximate Optimization Algorithm (QAOA) prepares a parameterized $p$-layer quantum state:
+
+$$|\psi(\boldsymbol{\gamma}, \boldsymbol{\beta})\rangle = \prod_{l=1}^p \left( e^{-i \beta_l H_M} e^{-i \gamma_l H_C} \right) |+\rangle^{\otimes N}$$
+
+1. **Initial Superposition**: All qubits initialized to $|+\rangle^{\otimes N} = H^{\otimes N}|0\rangle^{\otimes N}$.
+2. **Phase Separator $e^{-i \gamma_l H_C}$**: Implemented using single-qubit $R_Z$ rotations and two-qubit $R_{ZZ}$ entangling gates.
+3. **Mixer Hamiltonian $H_M = \sum_i X_i$**: Implemented via $R_X(2\beta_l)$ rotations.
+4. **Classical Optimization Loop**: Expectation value $\langle \psi | H_C | \psi \rangle$ is minimized using the classical **COBYLA** optimizer on **Qiskit Aer** (`AerSimulator`), sampling ground-state bitstrings.
+5. **Constraint Validation**: Every measured candidate bitstring is strictly validated for feasibility (exactly one active phase per intersection). Invalid configurations are filtered or repaired before application to signals.
+
+---
+
+## 11. Classical Baseline Solvers & Comparative Benchmarks
+
+The system incorporates classical baseline algorithms to measure empirical performance against QAOA:
+
+* **Simulated Annealing Baseline**: Explores the same QUBO energy landscape through thermal Metropolis-Hastings state transitions.
+* **Greedy Heuristic Baseline**: Assigns green lights to the highest instantaneous queue approach.
+* **Fixed-Time Baseline**: Traditional pre-timed round-robin cycle splits.
+
+Performance metrics recorded:
+* Objective function value (energy)
+* Feasible solution rate ($100\%$)
+* Execution runtime (milliseconds)
+* Total waiting time and vehicular throughput
+
+---
+
+## 12. Traveler Route Optimization & Weather Advisory Guidance
+
+The **Traveler Weather Advisory Service** compares the direct arterial route against a flood-safe detour corridor:
+
+```text
+Traveler Request: Origin = I1 (West Gateway) ➔ Destination = I6 (Tech District)
+
+DIRECT ROUTE (Via Grand Central I2):
+  * Path: I1 ➔ I2 ➔ I5 ➔ I6
+  * Weather: Heavy Rain + Flooding in Zone 2
+  * Warning: ⚠️ 1 Lane Blocked by Water Accumulation (12 cm)
+  * Travel Time: 14.2 min (High Congestion)
+
+ALTERNATIVE DETOUR ROUTE (Via South Civic I4):
+  * Path: I1 ➔ I4 ➔ I5 ➔ I6
+  * Weather: Dry Pavement / Normal Flow in Zone 4 & 1
+  * Warning: None (Safe Corridor)
+  * Travel Time: 8.5 min (Lower Congestion)
+  * Advantage: 40% Time Saved • 100% Flood Risk Avoided
+
+[SELECT & HIGHLIGHT SAFE ROUTE ON 2D MAP]
+```
+
+*The traveler is presented with full data and warnings rather than forced onto a path automatically.*
+
+---
+
+## 13. Emergency Vehicle Priority & Green Wave Corridors
+
+When an ambulance, fire truck, or police vehicle enters the network:
+1. **Route Calculation**: Determines the optimal path to hospital/destination avoiding flooded roads where possible.
+2. **Preemptive Signal Preemption**: Estimates arrival times (ETA) at downstream signals and reserves a synchronized green corridor (`PRIORITY GREEN`).
+3. **Queue Dissipation**: Safely discharges cross-traffic queues accumulated during the emergency window after the vehicle passes.
+
+---
+
+## 14. Adaptive Rolling Re-Optimization Loop
+
+The system operates in a closed continuous loop:
+
+$$\begin{aligned}
+T_0 &\longrightarrow \text{Sense Traffic Queues + Weather Zone States} \\
+    &\longrightarrow \text{Construct Weather-Aware QUBO Matrix} \\
+    &\longrightarrow \text{Execute QAOA Simulation on Qiskit Aer} \\
+    &\longrightarrow \text{Validate & Apply Optimal Green Splits} \\
+    &\longrightarrow \text{Vehicles Advance in Simulation Engine} \\
+T_1 &\longrightarrow \text{Weather Changes (e.g. Rain to Flood) / Queues Shift} \\
+    &\longrightarrow \text{Re-Formulate QUBO & Re-Optimize}
+\end{aligned}$$
+
+---
+
+## 15. Master Demonstration Scenarios (1 to 6)
+
+The platform provides 6 reproducible, jury-ready demonstration scenarios:
+
+| # | Scenario Name | Meteorological Setup | Key Demonstration Focus |
 |---|---|---|---|
-| 1 | **Traffic Optimization** | `backend/app/adaptive/controller.py` | ✅ Fully Implemented |
-| 2 | **Quantum Optimization** | `backend/app/quantum/qaoa.py` | ✅ Fully Implemented |
-| 3 | **QUBO Formulation** | `backend/app/signals/qubo/builder.py` | ✅ Fully Implemented |
-| 4 | **Ising Formulation** | `backend/app/quantum/ising.py` | ✅ Fully Implemented |
-| 5 | **QAOA Circuit Execution** | `backend/app/quantum/circuit.py` | ✅ Fully Implemented |
-| 6 | **Hybrid Quantum-Classical** | `backend/app/optimization/hybrid_solver.py` | ✅ Fully Implemented |
-| 7 | **4–8 Connected Intersections** | `backend/app/simulation/scenarios.py` (6 Nodes) | ✅ Fully Implemented |
-| 8 | **Traffic Density** | `backend/app/simulation/road.py` | ✅ Fully Implemented |
-| 9 | **Queue Length Tracking** | `backend/app/metrics/performance.py` | ✅ Fully Implemented |
-| 10 | **Road Capacity Limits** | `backend/app/domain/network.py` | ✅ Fully Implemented |
-| 11 | **Signal Status Lifecycle** | `backend/app/domain/signal.py` | ✅ Fully Implemented |
-| 12 | **Adaptive Green-Light Duration**| `backend/app/adaptive/rules.py` | ✅ Fully Implemented |
-| 13 | **Emergency Vehicle Modeling** | `backend/app/emergency/vehicle.py` | ✅ Fully Implemented |
-| 14 | **Emergency Green Corridor** | `backend/app/emergency/corridor.py` | ✅ Fully Implemented |
-| 15 | **Dynamic Events (Accidents)** | `backend/app/events/handlers.py` | ✅ Fully Implemented |
-| 16 | **Waiting Time Metric** | `backend/app/metrics/performance.py` | ✅ Fully Implemented |
-| 17 | **Traffic Throughput (v/h)** | `backend/app/metrics/performance.py` | ✅ Fully Implemented |
-| 18 | **Fuel Consumption Model** | `backend/app/metrics/environmental.py` | ✅ Fully Implemented |
-| 19 | **CO₂ Emissions Tracking** | `backend/app/metrics/environmental.py` | ✅ Fully Implemented |
-| 20 | **Classical Comparison** | `backend/app/benchmark/runner.py` | ✅ Fully Implemented |
-| 21 | **Interactive Dashboard** | `frontend/app/console/page.tsx` | ✅ Fully Implemented |
-| 22 | **Road Network Visualization** | `frontend/components/traffic/TrafficMap.tsx` | ✅ Fully Implemented |
-| 23 | **Emergency Route Display** | `TrafficMap.tsx` & `EmergencyCorridorPanel` | ✅ Fully Implemented |
-| 24 | **Classical vs Quantum Results** | `frontend/components/quantum/ClassicalComparison.tsx` | ✅ Fully Implemented |
+| **1** | **Normal Traffic** | All zones `CLEAR` | Baseline green split coordination; classical vs QAOA comparison. |
+| **2** | **Heavy Rain** | Zone 2 `HEAVY_RAIN` | Rain intensity 45 mm/h; speed damping $25\%$; throughput comparison. |
+| **3** | **Flooding** | Zone 2 `FLOODING` | Water level 15 cm; 1 lane blocked; queue surge; QUBO changes. |
+| **4** | **Fog / Mist** | Zone 3 `FOG` | Visibility $< 1\text{ km}$; speed factor $0.50$; risk penalty activation. |
+| **5** | **Mixed Weather** | Z1 Clear, Z2 Flood, Z3 Fog, Z4 Clear | Multi-zone differential physics and cross-network optimization. |
+| **6** | **Emergency + Flood** | Zone 2 Flooded + Active Ambulance | Emergency vehicle rerouting and green wave corridor synchronization through adverse conditions. |
 
 ---
 
-## 7. Project Directory Structure
+## 16. Interactive Digital Twin & 2D/3D Network Visualizer
+
+The Next.js operations console features an interactive digital twin canvas:
+* **Zone Overlays**: Color-coded boundary boxes with real-time status plaques for all 4 zones.
+* **Flood & Fog Animation**: Water ripple currents over flooded pavement and soft atmospheric mist over foggy sectors.
+* **Vehicle Rendering**: Moving passenger cars and high-visibility emergency ambulances with flashing beacons and headlight beams.
+* **Signal Heads**: 4-way LED optic signals cycling between Green, Yellow, and Red.
+* **Route Highlighting**: Real-time rendering of traveler advisory routes (amber dashed for flooded direct route, glowing emerald for safe detour).
+
+---
+
+## 17. REST API Endpoints & WebSocket Telemetry
+
+### Weather & Advisory APIs
+* `GET  /api/v1/weather/zones` — Retrieve all zone states, road factors, and climate conditions.
+* `POST /api/v1/weather/zones/{id}` — Dynamically modify zone weather (e.g. `clear` to `flooding`).
+* `POST /api/v1/routes/traveler-advisory` — Compute direct vs alternative route comparison with flood warnings.
+
+### Simulation & Signal Control APIs
+* `POST /api/v1/simulation/create` — Initialize network session with selected master scenario.
+* `POST /api/v1/simulation/start` — Start continuous simulation.
+* `POST /api/v1/simulation/step` — Advance simulation by $N$ seconds.
+* `POST /api/v1/simulation/pause` — Pause simulation.
+* `POST /api/v1/optimization/optimize` — Trigger on-demand QAOA optimization.
+* `POST /api/v1/emergency/corridors` — Dispatch emergency vehicle with green wave preemption.
+* `WS   /ws/simulation` — Full 60 FPS real-time telemetry stream.
+
+---
+
+## 18. Project Structure
 
 ```text
 Quantum-Traffic-Priority-Routing/
 ├── backend/
 │   ├── app/
-│   │   ├── adaptive/         # Adaptive signal control rules & cycle calculators
-│   │   ├── api/              # FastAPI REST routers & WebSocket connection manager
-│   │   ├── benchmark/        # Classical vs. Quantum comparison runners
-│   │   ├── core/             # Validated configuration & application settings
-│   │   ├── domain/           # Network graph, road link, intersection, and signal models
-│   │   ├── emergency/        # Emergency vehicle dispatch & green wave service
-│   │   ├── events/           # Dynamic incident handlers (accidents, closures, weather)
-│   │   ├── metrics/          # Delay, throughput, fuel consumption, and CO2 models
-│   │   ├── optimization/     # Hybrid quantum-classical decomposition & solvers
-│   │   ├── quantum/          # Qiskit Aer QAOA, Ising converter, & ansatz circuits
-│   │   ├── signals/qubo/     # QUBO builder, objective matrices, and solution decoders
-│   │   └── simulation/       # Microscopic vehicle simulation engine & scenarios
+│   │   ├── adaptive/         # Dynamic cycle control and adaptive rules
+│   │   ├── api/              # FastAPI REST routers & WebSocket streamer
+│   │   ├── benchmark/        # Classical baseline runners (Annealing, Greedy, Fixed)
+│   │   ├── core/             # Pydantic configuration and platform constants
+│   │   ├── domain/           # Network graph, weather models, signals, and vehicles
+│   │   ├── emergency/        # Emergency vehicle dispatcher and green wave coordinator
+│   │   ├── events/           # Dynamic incident injection engine
+│   │   ├── metrics/          # Delay, throughput, fuel burn, and CO2 models
+│   │   ├── optimization/     # Hybrid quantum-classical solver pipeline
+│   │   ├── quantum/          # Qiskit Aer QAOA, Ising converter, and ansatz circuits
+│   │   ├── routing/          # Traveler Weather Advisory Service & route evaluator
+│   │   ├── signals/qubo/     # Weather-aware QUBO matrix builder & decoders
+│   │   ├── simulation/       # Microscopic kinematics engine & 6 master scenarios
+│   │   └── weather/          # WeatherEngine singleton and climate zone manager
 │   └── tests/
-│       ├── unit/             # 38 unit test modules covering all subsystems
+│       ├── unit/             # 38 unit test modules (100% passing)
 │       └── integration/      # End-to-end simulation lifecycle & API tests
 ├── frontend/
 │   ├── app/
-│   │   ├── layout.tsx        # Root layout with ThemeProvider and brand typography
+│   │   ├── layout.tsx        # Root layout with ThemeProvider & branding
 │   │   ├── page.tsx          # Standalone Landing / Hero Page
-│   │   ├── console/page.tsx  # Full Operations Console
-│   │   └── globals.css       # Complete Vanilla CSS Design System (Dark & Light)
+│   │   ├── console/page.tsx  # Full Operations Console with all panels
+│   │   └── globals.css       # Obsidian Cyberpunk Design System
 │   ├── components/
 │   │   ├── dashboard/        # Header, ControlPanel, Sidebar
 │   │   ├── emergency/        # EmergencyCorridorPanel
 │   │   ├── events/           # EventInjectionModal, EventTimeline
 │   │   ├── metrics/          # MetricCards, MetricTrends
 │   │   ├── quantum/          # QuantumPanel, ClassicalComparison
-│   │   ├── traffic/          # TrafficMap (Interactive Canvas), IntersectionModal
-│   │   └── ui/               # LatticeLoader (Custom LED matrix pulse animation)
-│   └── public/               # Official Q-TrafficX brand logos and icons
-├── docs/                     # Comprehensive architecture, API, and QA specifications
-├── Makefile                  # Build, test, and execution commands
+│   │   ├── routes/           # TravelerAdvisoryPanel (Direct vs Detour)
+│   │   ├── traffic/          # TrafficMap (Weather overlays, floods, routes)
+│   │   ├── weather/          # WeatherControlPanel (Live zone switcher)
+│   │   └── ui/               # LatticeLoader (LED matrix pulse animation)
+│   └── public/               # Logos, emblems, and visual assets
+├── docs/                     # Technical specifications and architecture specs
 └── README.md                 # Master project documentation
 ```
 
 ---
 
-## 8. Installation & Setup Guide
+## 19. Installation & Execution Guide
 
-### 8.1 Prerequisites
-Ensure your workstation meets the following minimum requirements:
-* **Operating System**: Windows 10/11, macOS (Apple Silicon or Intel), or Linux (Ubuntu 20.04+)
+### 19.1 Prerequisites
+* **Operating System**: Windows 10/11, macOS, or Linux
 * **Python**: `3.11` or `3.12`
 * **Node.js**: `20.x` LTS or higher
 * **npm**: `10.x` or higher
-* **Git**: Installed and configured
 
----
-
-### 8.2 Step-by-Step Installation
+### 19.2 Step-by-Step Setup
 
 #### 1. Clone the Repository
 ```bash
@@ -327,13 +434,13 @@ git clone https://github.com/karteyareddy/Qubits-Quantexa_Project.git
 cd Qubits-Quantexa_Project
 ```
 
-#### 2. Create and Activate Python Virtual Environment
-* **On Windows (PowerShell / Command Prompt)**:
+#### 2. Configure Python Virtual Environment
+* **Windows (PowerShell)**:
   ```powershell
   python -m venv .venv
   .venv\Scripts\activate
   ```
-* **On macOS / Linux**:
+* **macOS / Linux**:
   ```bash
   python3 -m venv .venv
   source .venv/bin/activate
@@ -354,153 +461,53 @@ cd ..
 
 ---
 
-### 8.3 Launching the Application
+### 19.3 Launching the Application
 
-You will run the backend and frontend in two separate terminals.
+Run the backend and frontend in two separate terminal windows:
 
-#### Terminal 1: Start the Backend Server (FastAPI on Port 8000)
+#### Terminal 1: Backend API Server (FastAPI on Port 8000)
 ```bash
-# Make sure virtual environment is active (.venv)
+# Ensure virtual environment is active (.venv)
 python -m uvicorn app.api.main:app --app-dir backend --reload --host 127.0.0.1 --port 8000
 ```
-* The API will initialize and listen at: `http://127.0.0.1:8000`
-* Interactive API Documentation (Swagger UI): `http://127.0.0.1:8000/docs`
+* API Server: `http://127.0.0.1:8000`
+* Interactive API Documentation: `http://127.0.0.1:8000/docs`
 
-#### Terminal 2: Start the Frontend Application (Next.js on Port 3000)
+#### Terminal 2: Frontend Operations Center (Next.js on Port 3000)
 ```bash
 cd frontend
 npm run dev
 ```
-* The web application will launch at: `http://localhost:3000`
+* Operations Console: `http://localhost:3000/console`
+* Landing Page: `http://localhost:3000`
 
 ---
 
-### 8.4 Environment Configuration
+## 20. Testing & Quality Verification
 
-Environment settings are backed by validated Pydantic models. Optional local overrides can be configured via `.env`:
-
-```env
-# Backend Settings
-APP_ENV=development
-HOST=127.0.0.1
-PORT=8000
-CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-
-# Simulation Core
-RANDOM_SEED=42
-SIM_TICK_SECONDS=1.0
-OPTIMIZATION_INTERVAL_SECONDS=5.0
-MAX_SIMULATION_DURATION_SECONDS=3600.0
-
-# Quantum QAOA Simulation
-QAOA_REPS=1
-QAOA_SHOTS=256
-MAX_QAOA_QUBITS=30
-
-# Logging
-LOG_LEVEL=INFO
-
-# Frontend Public Variables
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws/simulation
-```
-
----
-
-## 9. Operator Guide & Interactive Demonstration
-
-Follow these steps to explore all capabilities of **Q-TrafficX**:
-
-1. **Visit the Landing Page (`/`)**:
-   * Open `http://localhost:3000` in your browser.
-   * Explore the presentation of the Q-TrafficX mission, core metrics, and architecture.
-   * Click **`Launch Traffic Console →`** to navigate to the operations center.
-
-2. **Start Microscopic Traffic Simulation**:
-   * On the Operations Console (`/console`), choose a scenario from the dropdown:
-     * `Low Traffic (3 vehicles)`: Ideal for inspecting individual vehicular trajectories and signal switches.
-     * `Congested Traffic (12 vehicles)`: Demonstrates heavy queue dynamics and arterial backpressure.
-   * Click **`▶ Start`** to start continuous simulation.
-   * Use the speed multipliers (**`1×`**, **`2×`**, **`5×`**) to accelerate network progression.
-   * Use **`⏸ Pause`**, **`⏭ Step 1s`**, or **`⏩ Skip +10s`** for fine-grained inspection.
-
-3. **Inspect the Interactive 2D Road Network**:
-   * Observe vehicles moving across the 6-intersection arterial network with illuminated headlights and dynamic braking colors.
-   * Watch intersection signals cycle between Green, Yellow, and Red.
-   * Click directly on any intersection circle ($I_1$ through $I_6$) to view its live queue depths and active phase splits in the **Intersection Inspector**.
-
-4. **Trigger Quantum QAOA Optimization**:
-   * Click **`⚛ Optimize Now`** in the control toolbar.
-   * The custom **LatticeLoader** (animated LED matrix pulse) indicates active statevector sampling and parameter tuning.
-   * Inspect the **Hybrid Quantum Optimizer** card to view the sampled ground-state energy, execution time (in milliseconds), and optimal phase recommendations.
-
-5. **Inject Dynamic Road Incidents**:
-   * Click **`⚡ Inject Event`** to open the Incident Modal.
-   * Choose an incident type:
-     * **Road Accident**: Halts movement on a designated link.
-     * **Lane Closure**: Halves link capacity to simulate construction.
-     * **Weather Slowdown**: Reduces cruising speeds across the arterial corridor.
-     * **Traffic Surge**: Spawns sudden vehicle clusters to stress-test adaptive control.
-   * Observe how the network responds and adjusts signal splits.
-
-6. **Activate Emergency Green Wave Corridor**:
-   * Locate the **Emergency Corridor** card on the dashboard.
-   * Select an origin ($I_1$) and destination ($I_6$) and click **`Activate Corridor`**.
-   * A priority emergency vehicle (ambulance) is dispatched with high siren priority ($w_e \gg 1$).
-   * Watch the corridor route glow on the map as upcoming signals are preemptively turned and held green until the vehicle safely passes.
-
-7. **Analyze Real-Time Telemetry & Environmental Metrics**:
-   * Review live metrics updating in real time:
-     * **Average Wait Time** per vehicle (seconds).
-     * **Network Throughput** (vehicles/hour).
-     * **Fuel Burn Model** (liters consumed).
-     * **$\text{CO}_2$ Footprint** (kilograms emitted).
-   * Review the **Classical vs. Hybrid Optimization** comparison table to evaluate QAOA performance against fixed-time control.
-
-8. **Theme Customization**:
-   * Toggle between **Dark Mode** (Cyber Obsidian) and **Light Mode** (Crisp Professional) via the top navigation toggle.
-
----
-
-## 10. Testing, Linting & Quality Verification
-
-Q-TrafficX enforces strict quality gates with comprehensive test coverage:
+Run the full verification suite to confirm all subsystems pass:
 
 ```bash
-# Run backend unit and integration test suite
-python -m pytest backend/tests -v
+# 1. Run full backend unit and integration test suite (181 tests)
+python -m pytest backend/tests -q
 
-# Run unit tests only
-python -m pytest backend/tests/unit -v
+# 2. Run unit tests only
+python -m pytest backend/tests/unit -q
 
-# Run integration tests only
-python -m pytest backend/tests/integration -v
+# 3. Run integration tests only
+python -m pytest backend/tests/integration -q
 
-# Run Python code formatting & linting (Ruff)
-ruff check backend
-
-# Run Python static type analysis (Mypy)
-mypy backend/app
-
-# Run Frontend production build (Next.js)
+# 4. Verify Next.js frontend TypeScript compilation and build
 cd frontend
 npm run build
 ```
 
 ---
 
-## 11. Scientific Honesty & Quantum Modeling Disclosures
+## 21. Scientific Honesty & Quantum Modeling Disclosures
 
-In adherence to strict scientific and engineering rigor:
-* **Quantum Simulation**: All QAOA executions in this platform run on the **Qiskit Aer** quantum circuit simulator (`AerSimulator`). They model true quantum state preparation, parameterized unitary rotations, and projective measurement sampling, but run locally on classical host hardware without asserting physical quantum advantage.
-* **Deterministic Fallback**: When problem dimensions exceed simulated qubit limits ($> 30$ variables), the system automatically routes execution through classical simulated annealing or greedy heuristic baselines, recording transparent metadata with the execution class explicitly tagged as `CLASSICAL_FALLBACK`.
-* **Environmental Estimation**: Fuel consumption and greenhouse gas figures are calculated via standard domain kinematic approximations (moving vs. idling consumption rates) and serve as relative comparative indicators.
-
----
-
-## 12. Acknowledgments
-
-* **Quantum Computing Framework**: [Qiskit](https://qiskit.org/) by IBM Quantum & [Qiskit Aer](https://github.com/Qiskit/qiskit-aer).
-* **Backend Infrastructure**: [FastAPI](https://fastapi.tiangolo.com/) & [Pydantic](https://docs.pydantic.dev/).
-* **Frontend Experience**: [Next.js](https://nextjs.org/) & [React](https://react.dev/).
-* **Branding & Architecture**: **Q-TrafficX** — *Smarter Roads • Safer Cities • Greener Tomorrow*.
+In strict alignment with scientific integrity and transparent engineering standards:
+* **Quantum Simulation**: All QAOA circuit executions run on the **Qiskit Aer** statevector simulator (`AerSimulator`). They model exact quantum state evolution, parameterized unitaries, and projective measurements, but execute on classical host hardware. No claim of physical quantum advantage is made.
+* **Deterministic Fallback**: The system features an explicit classical fallback mode (simulated annealing / heuristic optimizer) when problem dimensions exceed the simulator capacity or time bounds.
+* **Traffic Disruption vs. Hydrology**: The flood/water-flow model is a calibrated traffic-disruption simulation that adjusts effective capacity, speeds, and available lanes; it is not a hydrological forecasting model.
+* **Configurable Simulation Parameters**: All climate impact coefficients are modular simulation parameters ready for calibration against real-world municipal sensor data.

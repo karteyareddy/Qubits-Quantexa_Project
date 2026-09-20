@@ -55,10 +55,10 @@ export const Header: React.FC<HeaderProps> = ({
         <div>
           <h1 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
             <span>Q-Traffic<span style={{ color: '#00ff9d' }}>X</span></span>
-            <span className="text-slate-400 text-sm font-medium">Operations</span>
+            <span className="text-slate-400 text-sm font-medium">Console</span>
           </h1>
           <p className="text-xs text-slate-400 font-medium">
-            Quantum Adaptive Traffic Optimization • Emergency Preemption
+            Quantum-Enhanced Adaptive Urban Traffic Optimization & Route Guidance
           </p>
         </div>
       </div>
