@@ -86,12 +86,12 @@ Urban road networks worldwide are plagued by outdated, rigid traffic control par
 
 ```mermaid
 flowchart LR
-    A[Microscopic Traffic State\nQueues • Speeds • Densities] --> B[QUBO & Objective Builder\nArterial Coupling Matrix]
-    B --> C[Ising Spin Transformation\nPauli-Z Mapping]
-    C --> D[QAOA Quantum Simulator\nQiskit Aer Circuit]
-    D --> E[Candidate Bitstrings\n& Energy Sampling]
-    E --> F[Classical Refinement\n& Feasibility Filter]
-    F --> G[Adaptive Signal Execution\nGreen Splits & Corridors]
+    A["Microscopic Traffic State<br/>Queues • Speeds • Densities"] --> B["QUBO & Objective Builder<br/>Arterial Coupling Matrix"]
+    B --> C["Ising Spin Transformation<br/>Pauli-Z Mapping"]
+    C --> D["QAOA Quantum Simulator<br/>Qiskit Aer Circuit"]
+    D --> E["Candidate Bitstrings<br/>& Energy Sampling"]
+    E --> F["Classical Refinement<br/>& Feasibility Filter"]
+    F --> G["Adaptive Signal Execution<br/>Green Splits & Corridors"]
 ```
 
 ### 4.1 Global Traffic Cost Objective
@@ -209,8 +209,9 @@ flowchart TB
         end
     end
 
-    ConsolePage <-->|REST API Requests| Router
-    ConsolePage <-->|WebSocket Stream (100ms)| WSManager
+    ConsolePage -->|"REST API Requests"| Router
+    Router -->|"JSON Responses"| ConsolePage
+    WSManager -->|"WebSocket Telemetry Stream"| ConsolePage
     Router --> CoreSim
     Router --> Optimizer
     Router --> Preemption
