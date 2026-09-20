@@ -102,14 +102,12 @@ solver_type = st.sidebar.selectbox(
     [
         "Neal Simulated Annealing (Quantum-Inspired)",
         "Simulated Annealing (Basic)",
-        "D-Wave Cloud (Requires Token)",
     ]
 )
 
 _solver_map = {
     "Neal Simulated Annealing (Quantum-Inspired)": "neal",
     "Simulated Annealing (Basic)": "sa",
-    "D-Wave Cloud (Requires Token)": "dwave",
 }
 method = _solver_map[solver_type]
 

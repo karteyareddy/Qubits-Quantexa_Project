@@ -177,12 +177,10 @@ def solve_subproblem(bqm, method="neal", num_reads=200):
     Solve a single MTF sub-problem.
 
     Supported methods (all FREE, all LOCAL):
-        - "neal"  : D-Wave Neal Simulated Annealing (recommended)
+        - "neal"  : Neal Simulated Annealing (recommended)
         - "sa"    : dimod basic Simulated Annealing
-        - "tabu"  : D-Wave Tabu Search
+        - "tabu"  : Tabu Search
         - "exact" : Brute-force (tiny problems only, <20 variables)
-    Optional (requires D-Wave API token):
-        - "dwave" : LeapHybridSampler (cloud)
     """
     if method == "neal":
         try:
@@ -208,32 +206,6 @@ def solve_subproblem(bqm, method="neal", num_reads=200):
     elif method == "exact":
         sampler = dimod.ExactSolver()
         sampleset = sampler.sample(bqm)
-
-    elif method == "dwave":
-        try:
-            from dwave.system import LeapHybridSampler
-            sampler = LeapHybridSampler()
-            sampleset = sampler.sample(bqm)
-        except Exception:
-            sampler = dimod.SimulatedAnnealingSampler()
-            sampleset = sampler.sample(bqm, num_reads=num_reads)
-
-    # The key addition — direct QPU access for small MTF sub-problems
-    elif method == "qpu":
-        try:
-            from dwave.system import DWaveSampler, EmbeddingComposite
-            sampler = EmbeddingComposite(DWaveSampler())
-            sampleset = sampler.sample(bqm, num_reads=num_reads)
-        except ImportError:
-            print("D-Wave system not installed. Falling back to Neal SA.")
-            import neal
-            sampler = neal.SimulatedAnnealingSampler()
-            sampleset = sampler.sample(bqm, num_reads=num_reads)
-        except Exception as e:
-            print(f"QPU access failed: {e}. Falling back to Neal SA.")
-            import neal
-            sampler = neal.SimulatedAnnealingSampler()
-            sampleset = sampler.sample(bqm, num_reads=num_reads)    
 
     else:  # "sa" or fallback
         sampler = dimod.SimulatedAnnealingSampler()

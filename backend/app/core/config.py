@@ -30,8 +30,6 @@ class Settings(BaseSettings):
     max_qaoa_shots: int = Field(default=8192, ge=1)
     enable_osm: bool = True
     routing_cache_dir: Path = Path("cache")
-    enable_dwave: bool = False
-    dwave_api_token: SecretStr | None = Field(default=None, repr=False)
 
     @field_validator("api_host")
     @classmethod
@@ -47,15 +45,6 @@ class Settings(BaseSettings):
         if not value or any(not origin.strip() for origin in value):
             raise ValueError("at least one non-empty CORS origin is required")
         return value
-
-    @model_validator(mode="after")
-    def validate_optional_dwave_secret(self) -> Self:
-        token = self.dwave_api_token
-        if self.enable_dwave and (
-            token is None or not token.get_secret_value().strip()
-        ):
-            raise ValueError("D-Wave must not be enabled without an API token")
-        return self
 
 
 @lru_cache

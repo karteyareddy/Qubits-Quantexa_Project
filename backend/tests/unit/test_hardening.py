@@ -128,6 +128,7 @@ def test_hybrid_optimizer_truthfulness_metadata() -> None:
         "classical_brute_force",
         "classical_greedy",
         "fallback_fixed_time",
+        "hybrid_qaoa",
         "hybrid_qaoa_aer",
     )
     assert isinstance(res.fallback_used, bool)

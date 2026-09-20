@@ -17,7 +17,7 @@ PriorityMTFOptimizerService
         +-> variables.py (x(v,r) binary decision variables)
         +-> objective.py (route cost & congestion overlap weighting)
         +-> qubo.py (H_one_route + H_route_cost + H_congestion)
-        +-> solver.py (neal / sa / exact / qpu / dwave with fallback tracking)
+        +-> solver.py (neal / sa / exact with fallback tracking)
         +-> decoder.py (solution decoding & feasibility verification)
         +-> priority_mtf.py (subproblem decomposition & congestion feedback)
         |

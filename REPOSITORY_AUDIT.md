@@ -114,7 +114,7 @@ All active orchestration and UI execution occur at import time in `app.py`. Ther
 
 | File/artifact | Current state |
 |---|---|
-| `requirements.txt` | Contains future backend packages (`fastapi`, `pydantic`, `qiskit`, etc.) but omits packages required by the current active app (`streamlit`, `streamlit-folium`, `folium`, `dimod`, `matplotlib`, `dwave-neal`, and optional D-Wave packages). It is unpinned. |
+| `requirements.txt` | Contains future backend packages (`fastapi`, `pydantic`, `qiskit`, etc.) but omits packages required by the current active app (`streamlit`, `streamlit-folium`, `folium`, `dimod`, `matplotlib`, `neal`). It is unpinned. |
 | `pyproject.toml` | Configures Ruff, pytest, and mypy for the future backend. `testpaths = ["backend/tests"]` points to a directory that does not exist. There is no build-system/project metadata and no strict mypy configuration. |
 | `package-lock.json` | Empty npm lock structure with no `package.json` and no frontend dependencies. It does not represent an installable frontend. |
 | `docker-compose.yml` | Future two-service composition referencing missing `backend/` and `frontend/` build contexts and missing Dockerfiles. It cannot build the current repository. |
@@ -251,8 +251,6 @@ The active `solve_subproblem()` supports:
 | `sa` | Uses dimod simulated annealing through the default branch. |
 | `tabu` | Uses `tabu.TabuSampler` if importable; otherwise dimod simulated annealing. |
 | `exact` | Uses `dimod.ExactSolver`; exponential and suitable only for very small BQMs. |
-| `dwave` | Uses `LeapHybridSampler`; catches any exception and silently uses dimod simulated annealing. |
-| `qpu` | Uses `EmbeddingComposite(DWaveSampler())`; on failure attempts Neal as fallback. |
 
 The Streamlit UI exposes only Neal, basic SA, and Leap Hybrid. The standalone legacy solver exposes the same six conceptual adapters but is not imported.
 
@@ -329,9 +327,8 @@ The route colors, legends, metric groupings, solver status concepts, and map req
 - `numpy`
 - `folium`
 - `dimod`
-- optional `dwave-neal` (`neal` import)
-- optional `dwave-tabu` (`tabu` import)
-- optional `dwave-system`
+- optional `neal` (`neal` import)
+- optional `tabu` (`tabu` import)
 
 The original committed `requirements.txt` listed these packages (plus `scikit-learn`) with lower bounds. The currently checked-out `requirements.txt` no longer lists most of them, so it cannot install the current application.
 

@@ -151,7 +151,7 @@ Simulation states -> MetricsService
 Stage 3 Network & Candidate Routes + Vehicles
         -> PriorityMTFOptimizerService
         -> variables (x(v,r)) + objective + qubo
-        -> solver abstraction (neal/sa/tabu/exact/qpu/dwave)
+        -> solver abstraction (neal/sa/tabu/exact)
         -> decoder -> feasibility verification
         -> OptimizationResult + SolverMetadata
 ```

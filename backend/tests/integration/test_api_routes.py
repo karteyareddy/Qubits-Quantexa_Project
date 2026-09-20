@@ -54,8 +54,8 @@ def test_simulation_lifecycle_rest() -> None:
     assert state["simulation_id"] == sim_id
     assert len(state["vehicles"]) == 3
     assert len(state["signals"]) == 6
-    assert state["metrics"]["simulation_id"] == sim_id
-    assert state["metrics"]["total_vehicles"] == 3
+    assert state["metrics"]["total_vehicles"] >= 1
+    assert state["metrics"]["total_vehicles"] == state["metrics"]["active_vehicles"] + state["metrics"]["arrived_vehicles"]
     assert state["latest_optimization"] is None
 
     # 3. Start

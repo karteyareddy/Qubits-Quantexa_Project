@@ -8,7 +8,7 @@ Urban traffic signal timing across multi-intersection grid networks is an NP-har
 
 ## 2. Is this running on real quantum hardware or a quantum simulator?
 
-This prototype uses **Qiskit Aer** local quantum circuit simulation (`qiskit_aer.AerSimulator`). All QAOA circuit construction, statevector evolution, ansatz parameter tuning, and shot sampling are executed realistically via quantum circuit simulation. Optional D-Wave QPU hardware hooks exist via `dwave-ocean-sdk` configuration, but default execution uses Aer simulation to ensure offline reproducibility.
+This prototype uses **Qiskit Aer** local quantum circuit simulation (`qiskit_aer.AerSimulator`). All QAOA circuit construction, statevector evolution, ansatz parameter tuning, and shot sampling are executed realistically via quantum circuit simulation to ensure offline reproducibility and deterministic evaluation.
 
 ---
 

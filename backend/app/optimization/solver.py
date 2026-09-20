@@ -69,7 +69,7 @@ def solve_qubo(
             best_sample = {str(k): int(v) for k, v in sampleset.first.sample.items()}
             energy = float(sampleset.first.energy)
             actual_solver = "neal_sa"
-            backend_name = "dwave_neal"
+            backend_name = "neal_sa"
             execution_class = ExecutionClass.CLASSICAL
         except Exception as exc:  # noqa: BLE001
             fallback_used = True
@@ -91,47 +91,11 @@ def solve_qubo(
             best_sample = {str(k): int(v) for k, v in sampleset.first.sample.items()}
             energy = float(sampleset.first.energy)
             actual_solver = "tabu"
-            backend_name = "dwave_tabu"
+            backend_name = "tabu_search"
             execution_class = ExecutionClass.CLASSICAL
         except Exception as exc:  # noqa: BLE001
             fallback_used = True
             fallback_reason = f"Tabu solver unavailable ({exc})"
-            actual_solver = "dimod_sa"
-            backend_name = "dimod_simulated_annealing"
-            execution_class = ExecutionClass.CLASSICAL_FALLBACK
-            sampler = dimod.SimulatedAnnealingSampler()
-            sampleset = sampler.sample(bqm, num_reads=num_reads)
-            best_sample = {str(k): int(v) for k, v in sampleset.first.sample.items()}
-            energy = float(sampleset.first.energy)
-
-    elif requested_method in ("qpu", "dwave"):
-        is_qpu = requested_method == "qpu"
-        target_name = "D-Wave QPU" if is_qpu else "D-Wave LeapHybrid"
-        try:
-            if is_qpu:
-                from dwave.system import (  # type: ignore[import-untyped, import-not-found, unused-ignore]
-                    DWaveSampler,
-                    EmbeddingComposite,
-                )
-
-                sampler = EmbeddingComposite(DWaveSampler())
-                sampleset = sampler.sample(bqm, num_reads=num_reads)
-            else:
-                from dwave.system import (  # type: ignore[import-untyped, import-not-found, unused-ignore]
-                    LeapHybridSampler,
-                )
-
-                sampler = LeapHybridSampler()
-                sampleset = sampler.sample(bqm)
-
-            best_sample = {str(k): int(v) for k, v in sampleset.first.sample.items()}
-            energy = float(sampleset.first.energy)
-            actual_solver = requested_method
-            backend_name = "dwave_cloud"
-            execution_class = ExecutionClass.QUANTUM
-        except Exception as exc:  # noqa: BLE001
-            fallback_used = True
-            fallback_reason = f"{target_name} unavailable ({exc})"
             actual_solver = "dimod_sa"
             backend_name = "dimod_simulated_annealing"
             execution_class = ExecutionClass.CLASSICAL_FALLBACK

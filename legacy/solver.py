@@ -1,16 +1,13 @@
 """
 solver.py
 ---------
-Solves the Priority-Aware QUBO using classical, quantum-inspired,
-or D-Wave quantum solvers.
+Solves the Priority-Aware QUBO using classical and quantum-inspired solvers.
 
 Supported methods (all with graceful fallbacks):
-    - "neal"   : D-Wave Neal Simulated Annealing (quantum-inspired, LOCAL)
+    - "neal"   : Neal Simulated Annealing (quantum-inspired, LOCAL)
     - "sa"     : dimod basic Simulated Annealing (LOCAL)
-    - "tabu"   : D-Wave Tabu Search (LOCAL)
+    - "tabu"   : Tabu Search (LOCAL)
     - "exact"  : Brute-force ExactSolver (LOCAL, tiny problems only)
-    - "qpu"    : Direct D-Wave QPU via EmbeddingComposite (CLOUD, token required)
-    - "dwave"  : D-Wave LeapHybridSampler (CLOUD, token required)
 
 Author: Fidha Ahamed
 """
@@ -47,7 +44,7 @@ def solve_with_neal(bqm, num_reads=200):
             beta_range=[0.1, 10.0],
         )
     except ImportError:
-        print("dwave-neal not installed. Falling back to dimod SA.")
+        print("neal not installed. Falling back to dimod SA.")
         sampler = dimod.SimulatedAnnealingSampler()
         sampleset = sampler.sample(bqm, num_reads=num_reads)
 
@@ -98,7 +95,7 @@ def solve_with_tabu(bqm, num_reads=100, timeout=1000):
         sampler = tabu.TabuSampler()
         sampleset = sampler.sample(bqm, num_reads=num_reads, timeout=timeout)
     except ImportError:
-        print("dwave-tabu not installed. Falling back to dimod SA.")
+        print("tabu not installed. Falling back to dimod SA.")
         sampler = dimod.SimulatedAnnealingSampler()
         sampleset = sampler.sample(bqm, num_reads=num_reads)
 
@@ -129,79 +126,7 @@ def solve_exact(bqm):
 
 
 # --------------------------------------------------
-# 5. SOLVE USING DIRECT D-WAVE QPU (CLOUD)
-# --------------------------------------------------
-
-def solve_with_qpu(bqm, num_reads=100):
-    """
-    Solve QUBO using direct D-Wave QPU access.
-
-    Uses EmbeddingComposite to automatically map the problem
-    onto the QPU's Pegasus/Zephyr topology. Ideal for small
-    MTF sub-problems (< 50 binary variables).
-
-    NOTE: Requires D-Wave Leap account and API token configured
-    via `dwave config create` or DWAVE_API_TOKEN env variable.
-
-    Falls back to Neal SA if QPU is unavailable.
-
-    Args:
-        bqm (BinaryQuadraticModel)
-        num_reads (int): Number of QPU annealing reads
-
-    Returns:
-        best_sample (dict)
-    """
-    try:
-        from dwave.system import DWaveSampler, EmbeddingComposite
-        sampler = EmbeddingComposite(DWaveSampler())
-        sampleset = sampler.sample(bqm, num_reads=num_reads)
-        return sampleset.first.sample
-
-    except ImportError:
-        print("dwave-system not installed. Falling back to Neal SA.")
-        return solve_with_neal(bqm, num_reads=num_reads)
-
-    except Exception as e:
-        print(f"QPU access failed: {e}. Falling back to Neal SA.")
-        return solve_with_neal(bqm, num_reads=num_reads)
-
-
-# --------------------------------------------------
-# 6. SOLVE USING D-WAVE LEAP HYBRID SOLVER (CLOUD)
-# --------------------------------------------------
-
-def solve_with_dwave_hybrid(bqm):
-    """
-    Solve QUBO using D-Wave LeapHybridSampler (cloud-based).
-
-    Best suited for large problems (100+ variables) where direct
-    QPU embedding is difficult. For small MTF sub-problems, prefer
-    solve_with_qpu() instead.
-
-    NOTE: Requires D-Wave Leap account and API token.
-    Falls back to Neal SA if unavailable.
-
-    Returns:
-        best_sample (dict)
-    """
-    try:
-        from dwave.system import LeapHybridSampler
-        sampler = LeapHybridSampler()
-        sampleset = sampler.sample(bqm)
-        return sampleset.first.sample
-
-    except ImportError:
-        print("dwave-system not installed. Falling back to Neal SA.")
-        return solve_with_neal(bqm)
-
-    except Exception as e:
-        print(f"LeapHybrid failed: {e}. Falling back to Neal SA.")
-        return solve_with_neal(bqm)
-
-
-# --------------------------------------------------
-# 7. DECODE SOLUTION INTO ROUTE SELECTION
+# 5. DECODE SOLUTION INTO ROUTE SELECTION
 # --------------------------------------------------
 
 def decode_solution(sample, variable_map, vehicles):
@@ -235,7 +160,7 @@ def decode_solution(sample, variable_map, vehicles):
 
 
 # --------------------------------------------------
-# 8. COMPLETE SOLVER PIPELINE
+# 6. COMPLETE SOLVER PIPELINE
 # --------------------------------------------------
 
 def solve_traffic_qubo(bqm, variable_map, vehicles, method="neal"):
@@ -252,8 +177,6 @@ def solve_traffic_qubo(bqm, variable_map, vehicles, method="neal"):
             "sa"    - dimod basic SA (LOCAL)
             "tabu"  - Tabu Search (LOCAL)
             "exact" - Brute-force (LOCAL, tiny problems)
-            "qpu"   - Direct D-Wave QPU (CLOUD, token required)
-            "dwave" - LeapHybridSampler (CLOUD, token required)
 
     Returns:
         selected_routes (dict): {vehicle_id: route_node_list}
@@ -266,10 +189,6 @@ def solve_traffic_qubo(bqm, variable_map, vehicles, method="neal"):
         sample = solve_with_tabu(bqm)
     elif method == "exact":
         sample = solve_exact(bqm)
-    elif method == "qpu":
-        sample = solve_with_qpu(bqm)
-    elif method == "dwave":
-        sample = solve_with_dwave_hybrid(bqm)
     else:
         print(f"Unknown method '{method}'. Falling back to Neal SA.")
         sample = solve_with_neal(bqm)
